@@ -1,6 +1,6 @@
-from template.database import db
-from template import models
-from template import create_app
+from occrp.database import db
+from occrp import models
+from occrp import create_app
 
 if __name__ == "__main__":
     fake_app = create_app()

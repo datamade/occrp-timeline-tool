@@ -5,7 +5,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import DataRequired, Email
 
-from .models import PersonModel
+from .models import Person
 from .database import db
 
 class PersonForm(FlaskForm):

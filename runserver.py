@@ -1,4 +1,4 @@
-from template import create_app
+from occrp import create_app
 
 app = create_app()
 

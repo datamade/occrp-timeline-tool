@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 
-from .models import PersonModel
+from .models import Person
 from .forms import PersonForm
 from .database import db
 
@@ -12,7 +12,7 @@ def index():
 
     if form.validate_on_submit():
         
-        person = PersonModel(name=form.data['name'],
+        person = Person(name=form.data['name'],
                              email=form.data['email'])
         db.session.add(person)
         db.session.commit()
