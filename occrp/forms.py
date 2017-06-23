@@ -8,6 +8,7 @@ from wtforms.validators import DataRequired, Email
 from .models import Person
 from .database import db
 
+# TODO: look sqlalchemy extension...
 class PersonForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
     email = StringField('email', validators=[DataRequired(), Email()])
