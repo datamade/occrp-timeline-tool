@@ -57,10 +57,30 @@ DB_PORT = ''
 DB_NAME = 'occrp'
 ```
 
+The DB_USER and DB_PW most likely will remain an empty string, for local development. Likewise, DB_HOST might be "localhost," and DB_PORT may be "5432."
+
 Then, create your database:
 
 ```bash
 createdb occrp
 ```
 
+We use [Alembic](http://alembic.zzzcomputing.com/en/latest/index.html) and SQLAlchemy to track migrations and to update the database, whenever changes in the models occur. To run the migrations:
+
+```bash
+alembic upgrade head
+```
+
+You might make modifications to the model(s). If so, create a new migration:
+
+```bash
+alembic revision --autogenerate -m "Add first_name first to Person model"
+```
+
+Then, run the migration, as you did before: `alembic upgrade head`.
+
+## Team
+
+* Regina Compton
+* Eric Van Zanten
 
