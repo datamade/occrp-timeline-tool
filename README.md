@@ -66,7 +66,7 @@ createdb occrp
 python init_db.py
 ```
 
-We use [Alembic](http://alembic.zzzcomputing.com/en/latest/index.html) and SQLAlchemy to track migrations and to update the database, whenever changes in the models occur. To run the migrations:
+We use [Alembic](http://alembic.zzzcomputing.com/en/latest/index.html) and SQLAlchemy to track migrations and to update the database.
 
 You might make modifications to the model(s). If so, create a new migration:
 
