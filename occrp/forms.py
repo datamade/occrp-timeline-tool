@@ -8,6 +8,20 @@ from wtforms.validators import DataRequired, Email
 from .models import Person
 from .database import db
 
+
+class StoryForm(FlaskForm):
+    title = StringField('title', validators=[DataRequired()])
+
+    def validate(self):
+        rv = FlaskForm.validate(self)
+        if not rv:
+            return False
+
+        if self.errors:
+            return False
+
+        return True
+
 # TODO: look sqlalchemy extension...
 class PersonForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
