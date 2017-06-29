@@ -1,50 +1,68 @@
 {% extends 'base.html' %}
-{% block title %}Election Transcriber{% endblock %}
+{% block title %}OCCRP{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-sm-12">
-        <div class='jumbotron'>
-            <h3>OCCRP Timeline Tool</h3>
+        <div class="row story-form-head">
+            <div class="col-sm-12">
+                <h3 class="text-center">Add a story to the timeline tool</h3>
+            </div>
+        </div>
+    
+        <div class="row story-form-body">
+            <form class="form" method="POST" action="{{ url_for("views.index") }}">
+                {{ form.csrf_token }}
+                {% if form.title.errors %}
+                    <div class="col-sm-12 form-group has-error story-form-input">
+                {% else %}
+                    <div class="col-sm-12 form-group story-form-input">
+                {% endif %}
+                        <h4>Give your story a meaningful title</h4>
+                        {{ form.title(class="form-control") }}
+
+                        {% if form.title.errors %}
+                        {% for error in form.title.errors %}
+                            <span class="help-block">{{ error }}</span>
+                        {% endfor %}
+            {% endif %}
+                    </div>
+
+                <div class="form-group col-sm-12">
+                    <button class="btn btn-primary btn-block" type="submit"><i class="fa fa-plus-circle" aria-hidden="true"></i> Create</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-sm-12">
-        <h4>Add story</h4>
-        <p>Use this form to create a story. Simply add a meaningful title!</p>
-
-        <form class="form-horizontal" method="POST" action="{{ url_for("views.index") }}">
-            {{ form.csrf_token }}
-            {% if form.title.errors %}
-                <div class="form-group has-error">
-            {% else %}
-                <div class="form-group">
-            {% endif %}
-                {{ form.title.label(class="col-sm-2 control-label") }}
-                <div class="col-sm-10">
-                    {{ form.title(class="form-control") }}
-                    {% if form.title.errors %}
-                        {% for error in form.title.errors %}
-                            <span class="help-block">{{ error }}</span>
-                        {% endfor %}
+        <h3>Stories</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Last update</th>
+                    <th>Created at</th>
+                </tr>
+            </thead>
+        {% for story in stories %}
+            <tr>
+                <td class="story-width"><a href="{{ url_for('views.story', story_id=story.id) }}">{{ story.title }}</a></td>
+                <td class="updated-width">
+                    {% if story.updated_at %}
+                        {{ story.updated_at }}
                     {% endif %}
-                </div>
-            </div>
-            <div class="form-group">
-            <input class="btn pull-right" type="submit" value="Go">
-            </div>
-        </form>
+                </td>
+                <td class="created-width">
+                    {% if story.created_at %}
+                        {{ story.created_at }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-sm-12">
-        <p>List of stories...</p>
-    </div>
-</div>
-
-
-
 
 {% endblock %}

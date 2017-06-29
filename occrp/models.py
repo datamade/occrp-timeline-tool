@@ -74,5 +74,7 @@ class Story(db.Model):
     __tablename__ = 'story'
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False, unique=True)
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)
     events = relationship('Event', secondary=events_stories,
                             backref=backref('stories', lazy='dynamic'))
