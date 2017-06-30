@@ -67,8 +67,19 @@ class Event(db.Model):
     title = Column(String, nullable=False, unique=True)
     start_date = Column(DateTime) 
     end_date = Column(DateTime)
+    description = Column(String, nullable=True, unique=False)
+    significance = Column(String, nullable=True, unique=False)
+    event_type_id = Column(db.Integer, db.ForeignKey('event_type.id'))
     people = relationship('Person', secondary=people_events,
                             backref=backref('events', lazy='dynamic'))
+
+
+class EventType(db.Model):
+    __tablename__ = 'event_type'
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
+    events = relationship('Event', backref='event_type', lazy='dynamic')
+
 
 class Story(db.Model):
     __tablename__ = 'story'

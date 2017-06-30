@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask import request
 
-from .models import Story, Person
-from .forms import StoryForm, PersonForm
+from .models import * 
+from .forms import StoryForm, EventForm
 from .database import db
 from .app_config import TIME_ZONE
 
@@ -42,18 +42,14 @@ def index():
 
 @views.route('/story/<story_id>', methods=['GET', 'POST'])
 def story(story_id):
-    form = PersonForm()
+    form = EventForm()
     story = Story.query.get(story_id)
 
     if form.validate_on_submit():
+        title = form.data['title']
         
-        person = Person(name=form.data['name'],
-                        mail=form.data['email'])
-        db.session.add(person)
-        db.session.commit()
-
-        flash('Person {} saved!'.format(person.name))
-    
+        print(title, "Wheee1111!!!")
+        
     return render_template('story.html', 
                           form=form,
                           story=story)

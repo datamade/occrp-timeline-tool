@@ -11,45 +11,107 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <h3>Add a person, organization, source, or event to this story.</h3>
+        <h3>Add an event and related people, organizations, and sources to this story</h3>
     </div>
-    <div class="col-sm-6 col-sm-offset-3">
-        <form class="form-horizontal" method="POST" action="{{ url_for("views.index") }}">
-            {{ form.csrf_token }}
-            {% if form.name.errors %}
-                <div class="form-group has-error">
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+    <form class="form-horizontal" method="POST" action="{{ url_for("views.index") }}">
+        {{ form.csrf_token }}
+
+        <div class="row">
+            <div class="form-inline">
+            {% if form.title.errors %}
+                <div class="form-group has-error col-sm-12">
             {% else %}
-                <div class="form-group">
+                <div class="form-group col-sm-12">
             {% endif %}
-                {{ form.name.label(class="col-sm-2 control-label") }}
-                <div class="col-sm-10">
-                    {{ form.name(class="form-control") }}
-                    {% if form.name.errors %}
-                        {% for error in form.name.errors %}
+                <h4>Title</h4>
+                {{ form.title(class="form-control") }}
+                {% if form.title.errors %}
+                    {% for error in form.title.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-inline">
+                {% if form.start_date.errors %}
+                    <div class="form-group has-error col-sm-6">
+                {% else %}
+                    <div class="form-group col-sm-6">
+                {% endif %}
+                    <h4>Start date</h4>
+                    {{ form.start_date(class="form-control") }}
+                    {% if form.start_date.errors %}
+                        {% for error in form.start_date.errors %}
                             <span class="help-block">{{ error }}</span>
                         {% endfor %}
                     {% endif %}
-                </div>
-            </div>
-            {% if form.email.errors %}
-                <div class="form-group has-error">
-            {% else %}
-                <div class="form-group">
-            {% endif %}
-                {{ form.email.label(class="col-sm-2 control-label") }}
-                <div class="col-sm-10">
-                    {{ form.email(class="form-control") }}
-                    {% if form.email.errors %}
-                        {% for error in form.email.errors %}
+                    </div>
+
+                {% if form.end_date.errors %}
+                    <div class="form-group has-error col-sm-6">
+                {% else %}
+                    <div class="form-group col-sm-6">
+                {% endif %}
+                    <h4>End date</h4>
+                    {{ form.end_date(class="form-control") }}
+                    {% if form.end_date.errors %}
+                        {% for error in form.end_date.errors %}
                             <span class="help-block">{{ error }}</span>
                         {% endfor %}
                     {% endif %}
-                </div>
+                    </div>
+
             </div>
-            <div class="form-group">
-            <input class="btn pull-right" type="submit" value="Go">
+        </div>
+
+        <div class="row">
+            <div class="form-inline">
+                {% if form.description.errors %}
+                    <div class="form-group has-error col-sm-12">
+                {% else %}
+                    <div class="form-group col-sm-12">
+                {% endif %}
+                    <h4>Description</h4>
+                    {{ form.description(class="form-control") }}
+                    {% if form.description.errors %}
+                        {% for error in form.description.errors %}
+                            <span class="help-block">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
             </div>
-        </form>
+        </div>
+
+        <div class="row">
+            <div class="form-inline">
+                {% if form.significance.errors %}
+                    <div class="form-group has-error col-sm-12">
+                {% else %}
+                    <div class="form-group col-sm-12">
+                {% endif %}
+                    <h4>Significance</h4>
+                    {{ form.significance(class="form-control") }}
+                    {% if form.significance.errors %}
+                        {% for error in form.significance.errors %}
+                            <span class="help-block">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+        <input class="btn pull-right" type="submit" value="Go">
+        </div>
+
+    </form>
     </div>
 </div>
 

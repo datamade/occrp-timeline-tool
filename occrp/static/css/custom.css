@@ -68,6 +68,17 @@ div.story-form-input {
 .updated-width { width: 20%; }
 .created-width { width: 20%; }
 
+/* Style the form on the story detail */
+
+.form-horizontal .form-group {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.form-inline .form-control {
+  width: 100%;
+}
+
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
   margin-top: 0;
