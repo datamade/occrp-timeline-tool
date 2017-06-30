@@ -22,10 +22,10 @@
                         {{ form.title(class="form-control") }}
 
                         {% if form.title.errors %}
-                        {% for error in form.title.errors %}
-                            <span class="help-block">{{ error }}</span>
-                        {% endfor %}
-            {% endif %}
+                            {% for error in form.title.errors %}
+                                <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
                     </div>
 
                 <div class="form-group col-sm-12">
@@ -36,6 +36,8 @@
     </div>
 </div>
 
+
+{% if stories %}
 <div class="row">
     <div class="col-sm-12">
         <h3>Stories</h3>
@@ -47,23 +49,26 @@
                     <th>Created at</th>
                 </tr>
             </thead>
-        {% for story in stories %}
-            <tr>
-                <td class="story-width"><a href="{{ url_for('views.story', story_id=story.id) }}">{{ story.title }}</a></td>
-                <td class="updated-width">
-                    {% if story.updated_at %}
-                        {{ story.updated_at }}
-                    {% endif %}
-                </td>
-                <td class="created-width">
-                    {% if story.created_at %}
-                        {{ story.created_at }}
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
+            <tbody>
+                {% for story in stories %}
+                    <tr>
+                        <td class="story-width"><a href="{{ url_for('views.story', story_id=story.id) }}">{{ story.title }}</a></td>
+                        <td class="updated-width">
+                            {% if story.updated_at %}
+                                {{ story.updated_at }}
+                            {% endif %}
+                        </td>
+                        <td class="created-width">
+                            {% if story.created_at %}
+                                {{ story.created_at }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
 </div>
+{% endif %}
 
 {% endblock %}

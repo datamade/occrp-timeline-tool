@@ -1,0 +1,22 @@
+{% if event.description %}
+  <div class='col-sm-12'>
+    <h4>Description</h4>
+    {{ event.description }}
+  </div>
+{% endif %}
+
+{% if event.significance %}
+  <div class='col-sm-12'>
+    <h4>Significance</h4>
+    {{ event.significance }}
+  </div>
+{% endif %}
+
+{% if event.people %}
+  <div class="col-sm-12">
+    <h4>Related people</h4>
+    {% for person in event.people %}
+      <p>{{ person.name }}</p>
+    {% endfor %}
+  </div>
+{% endif %}

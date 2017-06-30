@@ -1,0 +1,117 @@
+<form class="form-horizontal" method="POST" action="{{ url_for('views.story', story_id=story.id) }}">
+    {{ form.csrf_token }}
+
+    <div class="row">
+        <div class="form-inline">
+        {% if form.title.errors %}
+            <div class="form-group has-error col-sm-12">
+        {% else %}
+            <div class="form-group col-sm-12">
+        {% endif %}
+            <h4>Title</h4>
+            {{ form.title(class="form-control") }}
+            {% if form.title.errors %}
+                {% for error in form.title.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-inline">
+            {% if form.start_date.errors %}
+                <div class="form-group has-error col-sm-6">
+            {% else %}
+                <div class="form-group col-sm-6">
+            {% endif %}
+                <h4>Start date</h4>
+                {{ form.start_date(class="form-control") }}
+
+                {% if form.start_date.errors %}
+                    {% for error in form.start_date.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+
+            {% if form.end_date.errors %}
+                <div class="form-group has-error col-sm-6">
+            {% else %}
+                <div class="form-group col-sm-6">
+            {% endif %}
+                <h4>End date</h4>
+                {{ form.end_date(class="form-control") }}
+                {% if form.end_date.errors %}
+                    {% for error in form.end_date.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-inline">
+            {% if form.description.errors %}
+                <div class="form-group has-error col-sm-12">
+            {% else %}
+                <div class="form-group col-sm-12">
+            {% endif %}
+                <h4>Description</h4>
+                {{ form.description(class="form-control") }}
+                {% if form.description.errors %}
+                    {% for error in form.description.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-inline">
+            {% if form.significance.errors %}
+                <div class="form-group has-error col-sm-12">
+            {% else %}
+                <div class="form-group col-sm-12">
+            {% endif %}
+                <h4>Significance</h4>
+                {{ form.significance(class="form-control") }}
+                {% if form.significance.errors %}
+                    {% for error in form.significance.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-inline">
+            {% if form.person_name.errors %}
+                <div class="form-group has-error col-sm-12">
+            {% else %}
+                <div class="form-group col-sm-12">
+            {% endif %}
+                <h4>Person involved</h4>
+                {{ form.person_name(class="form-control") }}
+                {% if form.person_name.errors %}
+                    {% for error in form.person_name.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+        </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-sm-12">
+          <br>
+          <button class="btn btn-primary btn-block" type="submit"><i class="fa fa-plus-circle" aria-hidden="true"></i> Create</button>
+      </div>
+    </div>
+
+</form>

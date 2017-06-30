@@ -59,7 +59,10 @@
             {% endif %}
         {% endwith %}
         </div>
-        {% block content %}{% endblock %}
+
+        <div class="container-fluid">
+          {% block content %}{% endblock %}
+        </div>
 
         <br />
         <div class='clearfix'></div>
@@ -78,6 +81,7 @@
     <script src="{{ url_for('static', filename='js/analytics_lib.js') }}"></script>
 
     <script src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
     {% block extra_javascript %}{% endblock %}
 
   </body>
