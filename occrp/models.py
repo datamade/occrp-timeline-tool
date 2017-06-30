@@ -36,7 +36,7 @@ class Person(db.Model):
     __tablename__ = 'person'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
-    email = Column(String, nullable=False, unique=True)
+    email = Column(String, unique=True)
     
     def __repr__(self): # pragma: no cover
         return '<PersonModel %r>' % self.name

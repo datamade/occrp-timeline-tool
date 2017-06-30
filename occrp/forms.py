@@ -2,7 +2,7 @@ import sqlalchemy as sa
 
 from flask_wtf import FlaskForm
 
-from wtforms import StringField, DateTimeField
+from wtforms import StringField, DateField
 from wtforms.validators import DataRequired
 
 from .models import Person
@@ -22,12 +22,14 @@ class StoryForm(FlaskForm):
 
         return True
 
+
 class EventForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
-    start_date = DateTimeField('start_date')
-    end_date = DateTimeField('end_date')
+    start_date = DateField('start_date')
+    end_date = DateField('end_date')
     description = StringField('description')
     significance = StringField('significance')
+    person_name = StringField('person_name')
 
     def validate(self):
         rv = FlaskForm.validate(self)

@@ -25,10 +25,10 @@ def index():
         story, created = get_or_create(Story, 
                           title=title, 
                           created_at=created_at)
-        db.session.add(story)
-        db.session.commit()
 
         if created:
+            db.session.add(story)
+            db.session.commit()
             message = 'Nicely done! You\'ve added a new story.'
             return redirect(url_for('views.index', message=message))
         else:
@@ -47,8 +47,42 @@ def story(story_id):
 
     if form.validate_on_submit():
         title = form.data['title']
-        
-        print(title, "Wheee1111!!!")
+        start_date = form.data['start_date']
+        end_date = form.data['end_date']
+        description = form.data['description']
+        significance = form.data['significance']
+        person_name = form.data['person_name']
+
+        event, event_created = get_or_create(Event, 
+                          title=title, 
+                          start_date=start_date,
+                          end_date=end_date,
+                          description=description,
+                          significance=significance)
+
+
+        if event_created:
+            # Add event
+            db.session.add(event)
+
+            # Create and add person
+            if person_name:
+                person, person_created = get_or_create(Person,
+                                  name=person_name)
+
+                event.people.append(person)
+
+            # Update story
+            story.events.append(event)
+            db.session.add(story)
+            story.updated_at = datetime.now(TIME_ZONE)
+            db.session.commit()
+
+            message = 'Nicely done! You\'ve added a new event and its related data.'
+            return redirect(url_for('views.story', story_id=story.id, message=message))
+        else:
+            form.title.errors.append('An event with this title already exists')
+      
         
     return render_template('story.html', 
                           form=form,

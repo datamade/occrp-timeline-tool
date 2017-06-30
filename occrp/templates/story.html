@@ -5,7 +5,7 @@
     <div class="col-sm-12">
         <h3>{{ story.title }}</h3>
         <p>Last update: {{ story.updated_at }}</p>
-        <p><a class="btn btn-primary" href="{{ url_for('views.index')}}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Return to stories list</a> </p>
+        <p><a class="btn btn-warning" href="{{ url_for('views.index')}}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Return to stories list</a> </p>
     </div>
 </div>
 
@@ -17,103 +17,41 @@
 
 <div class="row">
     <div class="col-md-12">
-    <form class="form-horizontal" method="POST" action="{{ url_for("views.index") }}">
-        {{ form.csrf_token }}
-
-        <div class="row">
-            <div class="form-inline">
-            {% if form.title.errors %}
-                <div class="form-group has-error col-sm-12">
-            {% else %}
-                <div class="form-group col-sm-12">
-            {% endif %}
-                <h4>Title</h4>
-                {{ form.title(class="form-control") }}
-                {% if form.title.errors %}
-                    {% for error in form.title.errors %}
-                        <span class="help-block">{{ error }}</span>
-                    {% endfor %}
-                {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-inline">
-                {% if form.start_date.errors %}
-                    <div class="form-group has-error col-sm-6">
-                {% else %}
-                    <div class="form-group col-sm-6">
-                {% endif %}
-                    <h4>Start date</h4>
-                    {{ form.start_date(class="form-control") }}
-                    {% if form.start_date.errors %}
-                        {% for error in form.start_date.errors %}
-                            <span class="help-block">{{ error }}</span>
-                        {% endfor %}
-                    {% endif %}
-                    </div>
-
-                {% if form.end_date.errors %}
-                    <div class="form-group has-error col-sm-6">
-                {% else %}
-                    <div class="form-group col-sm-6">
-                {% endif %}
-                    <h4>End date</h4>
-                    {{ form.end_date(class="form-control") }}
-                    {% if form.end_date.errors %}
-                        {% for error in form.end_date.errors %}
-                            <span class="help-block">{{ error }}</span>
-                        {% endfor %}
-                    {% endif %}
-                    </div>
-
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-inline">
-                {% if form.description.errors %}
-                    <div class="form-group has-error col-sm-12">
-                {% else %}
-                    <div class="form-group col-sm-12">
-                {% endif %}
-                    <h4>Description</h4>
-                    {{ form.description(class="form-control") }}
-                    {% if form.description.errors %}
-                        {% for error in form.description.errors %}
-                            <span class="help-block">{{ error }}</span>
-                        {% endfor %}
-                    {% endif %}
-                    </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-inline">
-                {% if form.significance.errors %}
-                    <div class="form-group has-error col-sm-12">
-                {% else %}
-                    <div class="form-group col-sm-12">
-                {% endif %}
-                    <h4>Significance</h4>
-                    {{ form.significance(class="form-control") }}
-                    {% if form.significance.errors %}
-                        {% for error in form.significance.errors %}
-                            <span class="help-block">{{ error }}</span>
-                        {% endfor %}
-                    {% endif %}
-                    </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-        <input class="btn pull-right" type="submit" value="Go">
-        </div>
-
-    </form>
+    {% include 'partials/event_form.html' %}
     </div>
 </div>
 
+{% if story.events %}
+<div class="row">
+    <div class="col-md-12">
+        <h3>Events</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="story-width">Title</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in story.events %}
+                    <tr class="detailsControl">
+                        <td>{{ event.title }}</td>
+                        <td>{{ event.start_date }}</td>
+                        <td>{{ event.end_date }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan='3' style='display: none;'>
+                            <div class="row flyout-row">
+                                {% include 'partials/fly_out.html' %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
