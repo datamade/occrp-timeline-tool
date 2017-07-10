@@ -1,11 +1,6 @@
 from pytz import timezone
 
 TIME_ZONE = timezone('America/Chicago')
-DEFAULT_USER = {
-    'name': 'eric',
-    'email': 'eric@eric.com',
-    'password': 'really-secret',
-}
 
 DB_USER = ''
 DB_PW = ''
