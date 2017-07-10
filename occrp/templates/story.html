@@ -55,3 +55,10 @@
 {% endif %}
 
 {% endblock %}
+{% block extra_javascript %}
+<script type="text/javascript">
+    $(document).ready(function(e){
+        console.log('yup');
+    })
+</script>
+{% endblock %}

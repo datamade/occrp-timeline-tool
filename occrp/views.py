@@ -57,6 +57,12 @@ def story(story_id):
         significance = form.data['significance']
         person_name = form.data['person_name']
 
+        if start_date:
+            start_date, start_date_accuracy = parseDateAccuracy(start_date)
+
+        if end_date:
+            end_date, end_date_accuracy = parseDateAccuracy(end_date)
+
         event, event_created = get_or_create(Event,
                           title=title,
                           start_date=start_date,
