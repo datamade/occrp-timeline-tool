@@ -1,10 +1,14 @@
 import pytz
 from datetime import datetime, timedelta
+import json
 
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash,\
+    make_response
 from flask import request
 
-from .models import * 
+import sqlalchemy as sa
+
+from .models import Story, Event, Person, Organization
 from .forms import StoryForm, EventForm
 from .database import db
 from .app_config import TIME_ZONE
@@ -22,9 +26,9 @@ def index():
     if form.validate_on_submit():
         title = form.data['title']
         created_at = datetime.now(TIME_ZONE)
-        
-        story, created = get_or_create(Story, 
-                          title=title, 
+
+        story, created = get_or_create(Story,
+                          title=title,
                           created_at=created_at)
 
         if created:
@@ -35,9 +39,9 @@ def index():
         else:
             form.title.errors.append('A story with this title already exists')
 
-    return render_template('index.html', 
-                          form=form, 
-                          message=message, 
+    return render_template('index.html',
+                          form=form,
+                          message=message,
                           stories=stories)
 
 
@@ -91,12 +95,49 @@ def story(story_id):
             return redirect(url_for('views.story', story_id=story.id, message=message))
         else:
             form.title.errors.append('An event with this title already exists')
-      
-        
-    return render_template('story.html', 
+
+
+    return render_template('story.html',
                           form=form,
                           story=story)
 
+
+@views.route('/people-search/')
+def people_search():
+    term = request.args['term']
+
+    where = Person.name.ilike('%{}%'.format(term))
+
+    people = db.session.query(sa.distinct(Person.name))\
+                       .filter(where)\
+                       .order_by(Person.name)
+
+    people = [{'person': c[0]} for c in people.all()]
+
+    response = make_response(json.dumps(people))
+
+    response.headers['Content-Type'] = 'application/json'
+
+    return response
+
+
+@views.route('/organization-search/')
+def organizations_search():
+    term = request.args['term']
+
+    where = Organization.name.ilike('%{}%'.format(term))
+
+    organizations = db.session.query(sa.distinct(Organization.name))\
+                       .filter(where)\
+                       .order_by(Organization.name)
+
+    organizations = [{'person': c[0]} for c in organizations.all()]
+
+    response = make_response(json.dumps(organizations))
+
+    response.headers['Content-Type'] = 'application/json'
+
+    return response
 
 @views.route('/about')
 def about():
