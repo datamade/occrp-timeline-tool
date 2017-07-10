@@ -18,4 +18,11 @@ def create_app(name=__name__, settings_override={}):
 
     app.register_blueprint(views)
     
+    @app.template_filter('format_date')
+    def format_date(s, fmt='%Y-%m-%d %-I:%M%p'):
+        if s:
+            return s.strftime(fmt)
+
+        return None
+    
     return app

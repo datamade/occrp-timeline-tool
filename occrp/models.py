@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import backref, relationship
-from sqlalchemy import Integer, String, Boolean, DateTime, Column, Table, ForeignKey
+from sqlalchemy import Integer, String, Boolean, DateTime, Column, Table, \
+    ForeignKey
 
 from .database import db
 
@@ -67,12 +68,14 @@ class Event(db.Model):
     title = Column(String, nullable=False, unique=True)
     start_date = Column(DateTime) 
     end_date = Column(DateTime)
+    start_date_accuracy = Column(Integer)
+    end_date_accuracy = Column(Integer)
     description = Column(String, nullable=True, unique=False)
     significance = Column(String, nullable=True, unique=False)
     event_type_id = Column(db.Integer, db.ForeignKey('event_type.id'))
     people = relationship('Person', secondary=people_events,
                             backref=backref('events', lazy='dynamic'))
-
+    
 
 class EventType(db.Model):
     __tablename__ = 'event_type'

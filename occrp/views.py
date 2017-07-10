@@ -8,6 +8,7 @@ from .models import *
 from .forms import StoryForm, EventForm
 from .database import db
 from .app_config import TIME_ZONE
+from .utils import parseDateAccuracy
 
 views = Blueprint('views', __name__)
 
@@ -52,11 +53,19 @@ def story(story_id):
         description = form.data['description']
         significance = form.data['significance']
         person_name = form.data['person_name']
-
+        
+        if start_date:
+            start_date, start_date_accuracy = parseDateAccuracy(start_date)
+        
+        if end_date:
+            end_date, end_date_accuracy = parseDateAccuracy(end_date)
+        
         event, event_created = get_or_create(Event, 
                           title=title, 
                           start_date=start_date,
+                          start_date_accuracy=start_date_accuracy,
                           end_date=end_date,
+                          end_date_accuracy=end_date_accuracy,
                           description=description,
                           significance=significance)
 
