@@ -1,8 +1,10 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import backref, relationship
-from sqlalchemy import Integer, String, Boolean, DateTime, Column, Table, ForeignKey
+from sqlalchemy import Integer, String, Boolean, DateTime, Column, Table, \
+    ForeignKey, event
 
 from .database import db
+from .utils import addDateAccuracy
 
 people_organizations = Table('people_organizations', db.Model.metadata,
         Column('person_id', Integer(), ForeignKey('person.id')),
@@ -67,11 +69,23 @@ class Event(db.Model):
     title = Column(String, nullable=False, unique=True)
     start_date = Column(DateTime) 
     end_date = Column(DateTime)
+    start_date_accuracy = Column(Integer)
+    end_date_accuracy = Column(Integer)
     description = Column(String, nullable=True, unique=False)
     significance = Column(String, nullable=True, unique=False)
     event_type_id = Column(db.Integer, db.ForeignKey('event_type.id'))
     people = relationship('Person', secondary=people_events,
                             backref=backref('events', lazy='dynamic'))
+
+
+@event.listens_for(Event, 'before_insert')
+def event_before_insert(mapper, connection, target):
+    addDateAccuracy(target)
+
+
+@event.listens_for(Event, 'before_update')
+def event_before_update(mapper, connection, target):
+    addDateAccuracy(target)
 
 
 class EventType(db.Model):
