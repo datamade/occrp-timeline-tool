@@ -15,9 +15,17 @@ def parseDateAccuracy(datefield):
         accuracy = 3
     
     guts = {}
-    for slot in datefield.__slots__:
-        if getattr(datefield, slot):
-            guts[slot] = getattr(datefield, slot)
+    date_parts = [
+        'year',
+        'month',
+        'day',
+        'hour',
+        'minute',
+        'second'
+    ]
+    for part in date_parts:
+        if getattr(datefield, part):
+            guts[part] = getattr(datefield, part)
     
     if accuracy >= 3:
         guts['day'] = 1
