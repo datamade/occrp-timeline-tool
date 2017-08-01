@@ -6,3 +6,4 @@ alembic.ini
 /keyrings/live/pubring.kbx~
 /keyrings/live/secring.gpg
 /configs/occrp.conf.nginx
+/configs/occrp.conf.supervisor
