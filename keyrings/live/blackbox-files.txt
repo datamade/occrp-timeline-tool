@@ -1,1 +1,2 @@
 configs/occrp.conf.nginx
+configs/occrp.conf.supervisor
