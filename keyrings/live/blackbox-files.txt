@@ -1,4 +1,5 @@
 configs/alembic.ini
+configs/app_config.py
 configs/occrp.conf.nginx
 configs/occrp.conf.supervisor
 scripts/after_install.sh
