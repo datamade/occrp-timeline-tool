@@ -56,9 +56,15 @@ def story(story_id):
         
         if start_date:
             start_date, start_date_accuracy = parseDateAccuracy(start_date)
-        
+        else:
+            start_date = None
+            start_date_accuracy = None
+
         if end_date:
             end_date, end_date_accuracy = parseDateAccuracy(end_date)
+        else:
+            end_date = None
+            end_date_accuracy = None
         
         event, event_created = get_or_create(Event, 
                           title=title, 
@@ -68,7 +74,6 @@ def story(story_id):
                           end_date_accuracy=end_date_accuracy,
                           description=description,
                           significance=significance)
-
 
         if event_created:
             # Add event

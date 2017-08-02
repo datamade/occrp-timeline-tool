@@ -45,6 +45,8 @@
                             <td>{{ event.start_date|format_date('%d %B %Y')}}</td>
                         {% elif event.start_date_accuracy == 1 %}
                             <td>{{ event.start_date|format_date('%d %B %Y %H:%M')}}</td>
+                        {% else %}
+                            <td></td>
                         {% endif %}
                         {% if event.end_date_accuracy == 4 %}
                             <td>{{ event.end_date|format_date('%Y') }}</td>
@@ -54,6 +56,8 @@
                             <td>{{ event.end_date|format_date('%d %B %Y')}}</td>
                         {% elif event.end_date_accuracy == 1 %}
                             <td>{{ event.end_date|format_date('%d %B %Y %H:%M')}}</td>
+                        {% else %}
+                            <td></td>
                         {% endif %}
                     </tr>
                     <tr>
