@@ -11,7 +11,6 @@ addons:
   postgresql: '9.4'
 before_script: 
 - mv configs/config.py.travis occrp/app_config.py
-- python init_db.py
 script: pytest tests
 deploy:
   provider: codedeploy
