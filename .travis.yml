@@ -9,6 +9,8 @@ install:
 - pip install --upgrade -r requirements.txt
 addons:
   postgresql: '9.4'
+before_script: 
+- mv configs/config.py.travis occrp/app_config.py
 script: pytest tests
 deploy:
   provider: codedeploy
