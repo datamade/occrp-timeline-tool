@@ -12,3 +12,4 @@ alembic.ini
 /scripts/app_stop.sh
 /configs/alembic.ini
 /configs/app_config.py
+.cache/*

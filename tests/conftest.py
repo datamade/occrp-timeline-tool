@@ -5,14 +5,14 @@ from pytest_postgresql.factories import (
     init_postgresql_database, drop_postgresql_database, get_config,
 )
 
-from template import create_app
-from template.database import db as _db
+from occrp import create_app
+from occrp.database import db as _db
 
-DB_USER = 'postgres'
-DB_HOST = ''
+DB_USER = ''
 DB_PW = ''
-DB_PORT = 5432
-DB_NAME = 'dedupe_test'
+DB_HOST = 'localhost'
+DB_PORT = '5432'
+DB_NAME = 'occrp_test'
 
 DB_OPTS = dict(
     user=DB_USER,

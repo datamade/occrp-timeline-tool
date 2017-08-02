@@ -1,12 +1,16 @@
-from template.models import PersonModel
+import os
+import unittest
+import tempfile
 
-def test_model(db_session):
-    person = PersonModel(name='someone',
-                    email='something@something.com')
-    
-    db_session.add(person)
+from occrp.models import Story
+
+def test_story(db_session):
+    story = Story(title='Real big news')
+
+    db_session.add(story)
     db_session.commit()
 
-    post_person = db_session.query(PersonModel).filter(PersonModel.name == 'someone').first()
+    added_story = db_session.query(Story).filter(Story.title == 'Real big news').first()
 
-    assert post_person.email == 'something@something.com'
+    assert added_story.title == 'Real big news'
+    
