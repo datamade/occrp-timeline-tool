@@ -1,0 +1,24 @@
+branches:
+  only:
+  - master
+language: python
+python:
+- '3.4'
+install:
+- pip install --upgrade pip
+- pip install --upgrade -r requirements.txt
+addons:
+  postgresql: '9.4'
+script: alembic upgrade head
+deploy:
+  provider: codedeploy
+  access_key_id: AKIAJNYGDLOJKHOUWCAA
+  secret_access_key:
+    secure: ZQglKgiUc8DYerCc/BkwqCcm4geTpHXRKQKFysnxNG2to/fl/Afzua5ZSsFLw6kAf9mRW1Tao2QzFIrhe8FDR0hPuQvQlcWKrrP4kPK2TxicObuDpzPoOR1+qiHbjbOalQ35vXz6it9XElsqbAve2HiSIX1cbfp7EYrwkU7IBtZcapzclaJW4wOQBgLKG0mPHYWSoH86M/SFuI/1oCEov88BwyzymiutvkUowex1xHyLwyHgpQUc/NGvARTPS1sPJMmZDuBFNsTe+dP7xGhiiz7PL6Uce2l9Hka0kR/V8h6R4De1dYWwaIntxXTaH6ui0zpZ89+S12VuMrUq0GiJ4WHlnV9TjqHwMPa9Wf9UBjzEu+jZorRifYPsrpIPrmxj0aJUF2qTrlIVNa9jia2u5q3qsZV2duw5DQ2Psij4yvz6bwEFWQLxlm5AkrUoU2Czjm3WBqe9zm+9AP2Gj3FRW9yE/kQj7ycC2XBdhzGHbPdTdnOrFfVvzUdpDa+VH32bKNnX0buzhorYWdwTw+iu2NN9/902zHzEGEsu7KYIoOQemcbFiuAQyU8kWd++WxeMHLxZXms3dZ8uhoLoJ/q48NwO9m2zLDOs/2ImfcAZmpsIJFuyCDy2APVdsIVc5ZP5Nn9igkmgZuo3zj+5UVMuT54DXQozXFNYbAEeq+RSu+Q=
+  bucket: ''
+  key: ''
+  bundle_type: ''
+  application: occrp-timeline-tool
+  deployment_group: staging
+  on:
+    branch: master
