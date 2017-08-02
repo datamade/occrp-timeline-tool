@@ -9,9 +9,9 @@ from occrp import create_app
 from occrp.database import db as _db
 
 DB_USER = ''
-DB_HOST = ''
 DB_PW = ''
-DB_PORT = 5432
+DB_HOST = 'localhost'
+DB_PORT = '5432'
 DB_NAME = 'occrp_test'
 
 DB_OPTS = dict(
