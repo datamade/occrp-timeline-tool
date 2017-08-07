@@ -6,7 +6,7 @@ from occrp.models import Story, Event, Person, Organization, Source, events_stor
 from occrp.forms import StoryForm, EventForm
 
 def test_story_form(db_session, client):
-    """ Tests that the story form on the index page creates a story """
+    """ Tests that the story form on the index page creates a story"""
     form = {'title': 'Real big news story'}
 
     rv = client.post('/', data=form)

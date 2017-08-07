@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('.collapse').collapse()
+    // $('.collapse').collapse()
 
     // Todo: not working?
     $("body").on("mouseover", "tr.detailsControl", function(e){
