@@ -1,23 +1,22 @@
 import pytz
 from datetime import datetime, timedelta
+from sqlalchemy import create_engine
 
-from flask import Blueprint, render_template, redirect, url_for, flash
-from flask import request
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 
 from .models import * 
 from .forms import StoryForm, EventForm
 from .database import db
-from .app_config import TIME_ZONE
+from .app_config import TIME_ZONE, DB_CONN
 from .utils import parseDateAccuracy
 
 views = Blueprint('views', __name__)
-
+engine = create_engine(DB_CONN, convert_unicode=True)
 
 @views.route('/', methods=['GET', 'POST'])
 def index():
     form = StoryForm()
     stories = Story.query.all()
-    message = request.args.get('message')
 
     if form.validate_on_submit():
         title = form.data['title']
@@ -31,13 +30,13 @@ def index():
             db.session.add(story)
             db.session.commit()
             message = 'Nicely done! You\'ve added a new story.'
-            return redirect(url_for('views.index', message=message))
+            flash(message)
+            return redirect(url_for('views.index'))
         else:
             form.title.errors.append('A story with this title already exists')
 
     return render_template('index.html', 
                           form=form, 
-                          message=message, 
                           stories=stories)
 
 
@@ -93,11 +92,27 @@ def story(story_id):
             db.session.commit()
 
             message = 'Nicely done! You\'ve added a new event and its related data.'
-            return redirect(url_for('views.story', story_id=story.id, message=message))
+            flash(message)
+            return redirect(url_for('views.story', story_id=story.id))
         else:
             form.title.errors.append('An event with this title already exists')
       
-        
+    
+    people_facets_query = '''
+        SELECT trim(person.name) as facet, count(person.id) as facet_count 
+        FROM story
+        JOIN events_stories ON story.id = events_stories.story_id 
+        JOIN event ON events_stories.event_id = event.id 
+        JOIN people_events ON event.id = people_events.event_id 
+        JOIN person ON people_events.person_id = person.id 
+        WHERE story.id={}
+        GROUP BY person.name
+    '''.format(story_id)
+
+    results = engine.execute(people_facets_query).first()
+    print(results, "!!!")
+
+
     return render_template('story.html', 
                           form=form,
                           story=story)

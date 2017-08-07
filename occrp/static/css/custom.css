@@ -10,7 +10,13 @@ body {
 }
 
 table, label,.control-label,.help-block,.checkbox,.radio { font-size: 14px; }
+
 .alert { font-size: 1em; font-weight: 500; }
+
+.alert-dismissable, .alert-dismissible  { 
+  background-color: #EBFAFF;
+  border-color: #D6F5FF;
+}
 
 .label:hover { text-decoration: none; }
 
