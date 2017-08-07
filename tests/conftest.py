@@ -7,6 +7,7 @@ from pytest_postgresql.factories import (
 
 from occrp import create_app
 from occrp.database import db as _db
+from occrp.models import Story
 
 DB_USER = ''
 DB_PW = ''
@@ -48,9 +49,10 @@ def app(request, database):
     """Session-wide test `Flask` application."""
     settings_override = {
         'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': DB_CONN
+        'SQLALCHEMY_DATABASE_URI': DB_CONN,
+        'WTF_CSRF_ENABLED': False,
     }
-    app = create_app(__name__, settings_override)
+    app = create_app('occrp', settings_override)
 
     # Establish an application context before running the tests.
     ctx = app.app_context()
@@ -95,3 +97,18 @@ def db_session(db, request):
 
     request.addfinalizer(teardown)
     return session
+
+
+@pytest.fixture(scope='function')
+def story(db, request):
+    """Creates a new instance of a story."""
+    story = Story(title='Real big news story')
+    db.session.add(story)
+    db.session.commit()
+
+    def teardown():
+        db.session.delete(story)
+    
+    request.addfinalizer(teardown)
+    return story
+
