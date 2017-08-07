@@ -47,7 +47,7 @@ table, label,.control-label,.help-block,.checkbox,.radio { font-size: 14px; }
   border-bottom: 1px solid #e5e5e5;
 }
 
-/* Style the form on the index page */
+/* Index */
 div.story-form-head {
   background-color: var(--purple-shade);
   color: #fff;
@@ -74,8 +74,7 @@ div.story-form-input {
 .updated-width { width: 20%; }
 .created-width { width: 20%; }
 
-/* Style the form on the story detail */
-
+/* Story detail */
 .form-horizontal .form-group {
   margin-left: 0;
   margin-right: 0;
@@ -84,6 +83,8 @@ div.story-form-input {
 .form-inline .form-control {
   width: 100%;
 }
+
+div.panel-body > li { list-style: none; }
 
 /* Make the masthead heading the same height as the navigation */
 .header h3 {

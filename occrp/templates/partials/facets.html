@@ -1,0 +1,23 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{facet}}">
+        {{facet}}
+      </a>
+    </h4>
+  </div>
+  <div id="collapse{{facet}}" class="panel-collapse collapse">
+    <div class="panel-body">
+      {% for entity in facets[facet] %}
+        <p>{{entity['facet']}}<span class="badge badge-facet pull-right">{{entity['facet_count']}}</span></p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+
+
+  
+
+  

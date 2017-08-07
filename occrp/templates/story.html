@@ -23,7 +23,15 @@
 
 {% if story.events %}
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-4">
+        <!-- Facet panel -->
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            {% for facet in facets %}
+                {% include 'partials/facets.html' %}        
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-8">
         <h3>Events</h3>
         <table class="table table-striped">
             <thead>

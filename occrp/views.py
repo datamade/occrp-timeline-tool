@@ -109,13 +109,48 @@ def story(story_id):
         GROUP BY person.name
     '''.format(story_id)
 
-    results = engine.execute(people_facets_query).first()
-    print(results, "!!!")
+    people_facets = engine.execute(people_facets_query).fetchall()
+    people_facets = [dict(p) for p in people_facets]
 
+    organizations_facets_query = '''
+        SELECT trim(organization.name) as facet, count(organization.id) as facet_count 
+        FROM story
+        JOIN events_stories ON story.id = events_stories.story_id 
+        JOIN event ON events_stories.event_id = event.id 
+        JOIN events_organizations ON event.id = events_organizations.event_id 
+        JOIN organization ON events_organizations.organization_id = organization.id 
+        WHERE story.id={}
+        GROUP BY organization.name
+    '''.format(story_id)
+    
+    organization_facets = engine.execute(organizations_facets_query).fetchall()
+    organization_facets = [dict(o) for o in organization_facets]
+
+    sources_facets_query = '''
+        SELECT trim(source.label) as facet, count(source.id) as facet_count 
+        FROM story
+        JOIN events_stories ON story.id = events_stories.story_id 
+        JOIN event ON events_stories.event_id = event.id 
+        JOIN events_sources ON event.id = events_sources.event_id 
+        JOIN source ON events_sources.source_id = source.id 
+        WHERE story.id={}
+        GROUP BY source.label
+    '''.format(story_id)
+    
+    source_facets = engine.execute(sources_facets_query).fetchall()
+    source_facets = [dict(s) for s in source_facets]
+
+    facets = {
+        'People': people_facets,
+        'Organizations': organization_facets,
+        'Sources': source_facets,
+    }
 
     return render_template('story.html', 
                           form=form,
-                          story=story)
+                          story=story,
+                          facets=facets,
+                          )
 
 
 @views.route('/about')
