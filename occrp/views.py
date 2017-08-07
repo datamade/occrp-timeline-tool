@@ -52,6 +52,8 @@ def story(story_id):
         description = form.data['description']
         significance = form.data['significance']
         person_name = form.data['person_name']
+        source_label = form.data['source_label']
+        organization = form.data['organization']
         
         if start_date:
             start_date, start_date_accuracy = parseDateAccuracy(start_date)
@@ -82,9 +84,18 @@ def story(story_id):
             if person_name:
                 person, person_created = get_or_create(Person,
                                   name=person_name)
-
                 event.people.append(person)
 
+            if source_label:
+                source, source_created = get_or_create(Source,
+                                        label=source_label)
+                event.sources.append(source)
+            
+            if organization:
+                org, org_created = get_or_create(Organization,
+                                    name=organization)
+                event.organizations.append(org)
+                
             # Update story
             story.events.append(event)
             db.session.add(story)

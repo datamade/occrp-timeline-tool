@@ -18,6 +18,8 @@ class EventForm(FlaskForm):
     description = StringField('description')
     significance = StringField('significance')
     person_name = StringField('person_name')
+    source_label = StringField('source_label')
+    organization = StringField('organization')
 
     def validate(self):
         rv = FlaskForm.validate(self)
