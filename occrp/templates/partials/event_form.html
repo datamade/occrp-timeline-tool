@@ -108,6 +108,44 @@
     </div>
 
     <div class="row">
+        <div class="form-inline">
+            {% if form.organization.errors %}
+                <div class="form-group has-error col-sm-12">
+            {% else %}
+                <div class="form-group col-sm-12">
+            {% endif %}
+                <h4>Organization</h4>
+                {{ form.organization(class="form-control") }}
+                {% if form.organization.errors %}
+                    {% for error in form.organization.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="form-inline">
+            {% if form.source_label.errors %}
+                <div class="form-group has-error col-sm-12">
+            {% else %}
+                <div class="form-group col-sm-12">
+            {% endif %}
+                <h4>Source</h4>
+                {{ form.source_label(class="form-control") }}
+                {% if form.source_label.errors %}
+                    {% for error in form.source_label.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+        </div>
+    </div>
+
+    
+
+    <div class="row">
       <div class="form-group col-sm-12">
           <br>
           <button class="btn btn-primary btn-block" type="submit"><i class="fa fa-plus-circle" aria-hidden="true"></i> Create</button>

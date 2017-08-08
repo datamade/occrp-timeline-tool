@@ -2,13 +2,20 @@ from pytz import timezone
 
 TIME_ZONE = timezone('Europe/Berlin')
 
-DB_USER = ''
+DB_USER = 'travis'
 DB_PW = ''
 DB_HOST = 'localhost'
 DB_PORT = '5432'
-DB_NAME = 'occrp'
+DB_NAME = 'occrp_test'
 
-DB_CONN='postgresql+psycopg2://{0}:{1}@{2}:{3}/{4}'\
-        .format(DB_USER, DB_PW, DB_HOST, DB_PORT, DB_NAME)
+DB_OPTS = dict(
+    user=DB_USER,
+    host=DB_HOST,
+    pw=DB_PW,
+    port=DB_PORT,
+    name=DB_NAME
+)
+
+DB_CONN='postgresql+psycopg2://{user}:{pw}@{host}:{port}/{name}'.format(**DB_OPTS)
 
 SECRET_KEY = 'secretkeyfortesting'

@@ -17,7 +17,7 @@
 
 <div class="row">
     <div class="col-md-12">
-    {% include 'partials/event_form.html' %}
+        {% include 'partials/event_form.html' %}
     </div>
 </div>
 
@@ -25,8 +25,20 @@
 <div class="row">
     <div class="col-md-12">
         <h3>Events</h3>
-        <table class="table table-striped">
-            <thead>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <!-- Facet panel -->
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            {% for facet in facets %}
+                {% include 'partials/facets.html' %}        
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-8">
+        <table class="table table-bordered">
+            <thead class="thead-default">
                 <tr>
                     <th class="story-width">Title</th>
                     <th>Start date</th>
@@ -36,7 +48,7 @@
             <tbody>
                 {% for event in story.events %}
                     <tr class="detailsControl">
-                        <td>{{ event.title }}</td>
+                        <td><i class="fa fa-chevron-circle-right" aria-hidden="true"></i><i class="fa fa-chevron-circle-down" aria-hidden="true" style="display: none;"></i> {{ event.title }}</td>
                         {% if event.start_date_accuracy == 4 %}
                             <td>{{ event.start_date|format_date('%Y') }}</td>
                         {% elif event.start_date_accuracy == 3 %}

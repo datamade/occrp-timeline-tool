@@ -1,30 +1,17 @@
 import os
+
 import pytest
 
 from pytest_postgresql.factories import (
     init_postgresql_database, drop_postgresql_database, get_config,
 )
 
+import psycopg2
+
 from occrp import create_app
 from occrp.database import db as _db
-
-DB_USER = ''
-DB_PW = ''
-DB_HOST = 'localhost'
-DB_PORT = '5432'
-DB_NAME = 'occrp_test'
-
-DB_OPTS = dict(
-    user=DB_USER,
-    host=DB_HOST,
-    pw=DB_PW,
-    port=DB_PORT,
-    name=DB_NAME
-)
-
-DB_FMT = 'postgresql://{user}:{pw}@{host}:{port}/{name}'
-
-DB_CONN = DB_FMT.format(**DB_OPTS)
+from occrp.models import Story
+from occrp.app_config import DB_OPTS, DB_CONN
 
 
 @pytest.fixture(scope='session')
@@ -33,9 +20,20 @@ def database(request):
     pg_port = DB_OPTS.get("port")
     pg_user = DB_OPTS.get("user")
     pg_db = DB_OPTS.get("name", "tests")
+    
+    if 'test' not in pg_db:
+        pg_db = '{}_test'.format(pg_db)
 
     # Create our Database.
-    init_postgresql_database(pg_user, pg_host, pg_port, pg_db)
+    try:
+        init_postgresql_database(pg_user, pg_host, pg_port, pg_db)
+    except psycopg2.ProgrammingError as e:
+        if 'permission denied' in str(e):
+            pg_user = 'postgres'
+            init_postgresql_database(pg_user, pg_host, pg_port, pg_db)
+        else:
+            raise e
+
 
     # Ensure our database gets deleted.
     @request.addfinalizer
@@ -48,9 +46,10 @@ def app(request, database):
     """Session-wide test `Flask` application."""
     settings_override = {
         'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': DB_CONN
+        'SQLALCHEMY_DATABASE_URI': DB_CONN,
+        'WTF_CSRF_ENABLED': False,
     }
-    app = create_app(__name__, settings_override)
+    app = create_app('occrp', settings_override)
 
     # Establish an application context before running the tests.
     ctx = app.app_context()
@@ -95,3 +94,18 @@ def db_session(db, request):
 
     request.addfinalizer(teardown)
     return session
+
+
+@pytest.fixture(scope='function')
+def story(db, request):
+    """Creates a new instance of a story."""
+    story = Story(title='Real big news story')
+    db.session.add(story)
+    db.session.commit()
+
+    def teardown():
+        db.session.delete(story)
+    
+    request.addfinalizer(teardown)
+    return story
+
