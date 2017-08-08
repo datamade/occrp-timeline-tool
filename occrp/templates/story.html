@@ -9,18 +9,6 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-sm-12">
-        <h3>Add an event and related people, organizations, and sources to this story</h3>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        {% include 'partials/event_form.html' %}
-    </div>
-</div>
-
 {% if story.events %}
 <div class="row">
     <div class="col-md-12">
@@ -52,9 +40,30 @@
         <table class="table table-bordered">
             <thead class="thead-default">
                 <tr>
-                    <th class="story-width">Title</th>
-                    <th>Start date</th>
-                    <th>End date</th>
+                    <th class="story-width">
+                        <a href="{{url_for('views.story', story_id=story.id)}}?{{ request|query_transform(order_by='title', sort=toggle_order) }}">
+                            Title
+                            {% if order_by == 'title' %}
+                                {{ toggle_order|get_sort_icon|safe }}
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{url_for('views.story', story_id=story.id)}}?{{ request|query_transform(order_by='start_date', sort=toggle_order) }}">
+                            Start date
+                            {% if order_by == 'start_date' %}
+                                {{ toggle_order|get_sort_icon|safe }}
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{url_for('views.story', story_id=story.id)}}?{{ request|query_transform(order_by='end_date', sort=toggle_order) }}">
+                            End date
+                            {% if order_by == 'end_date' %}
+                                {{ toggle_order|get_sort_icon|safe }}
+                            {% endif %}
+                        </a>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -94,6 +103,18 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <h3>Add an event and related people, organizations, and sources to this story</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        {% include 'partials/event_form.html' %}
     </div>
 </div>
 {% endif %}

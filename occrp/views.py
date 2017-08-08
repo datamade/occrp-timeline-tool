@@ -45,6 +45,12 @@ def story(story_id):
     form = EventForm()
     story = Story.query.get(story_id)
     query = request.args.get('q', None)
+    sort_order = request.args.get('sort', 'desc')
+    order_by = request.args.get('order_by', 'start_date')
+
+    toggle_order = 'asc'
+    if sort_order.lower() == 'asc':
+        toggle_order = 'desc'
 
     if form.validate_on_submit():
         title = form.data['title']
@@ -134,16 +140,16 @@ def story(story_id):
         'Sources': source_facets,
     }
 
-    events = story.events
-    if query:
-        events = get_query_results(story_id, query)
+    events = get_query_results(story_id, query, order_by, sort_order)
         
     return render_template('story.html', 
                           form=form,
                           story=story,
                           facets=facets,
                           events=events,
-                          query=query
+                          query=query,
+                          order_by=order_by,
+                          toggle_order=toggle_order
                           )
 
 
@@ -174,14 +180,23 @@ def get_facets(**kwargs):
     return facets
 
 
-def get_query_results(story_id, query):
-    queried_events_query = '''
-        SELECT e.title, e.start_date, e.end_date, e.description, e.significance 
+def get_query_results(story_id, query, order_by, sort_order):
+    results_query = '''
+        SELECT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
         FROM event as e
         JOIN events_stories ON e.id = events_stories.event_id 
         JOIN story ON events_stories.story_id = story.id
         WHERE story_id={story_id}
-        AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance)
-        '''.format(story_id=story_id, query=query)
+        '''.format(story_id=story_id)
 
-    return engine.execute(queried_events_query).fetchall()
+    if query:
+        results_query += '''
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance)
+            '''.format(query=query)
+
+    results_query += '''
+        ORDER BY {order_by} {sort_order}
+        '''.format(order_by=order_by,
+                   sort_order=sort_order)
+
+    return engine.execute(results_query).fetchall()
