@@ -86,6 +86,10 @@ div.story-form-input {
 
 div.panel-body > li { list-style: none; }
 
+.panel-group .panel { margin-bottom: 5px; }
+
+.thead-default { background-color: #f5f5f5; }
+
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
   margin-top: 0;
