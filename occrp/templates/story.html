@@ -4,8 +4,8 @@
 <div class="row">
     <div class="col-sm-12">
         <h3>{{ story.title }}</h3>
-        <p>Last update: {{ story.updated_at }}</p>
-        <p><a class="btn btn-warning" href="{{ url_for('views.index')}}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Return to stories list</a> </p>
+        <p>Last update: <strong>{{ story.updated_at.strftime('%Y %B %d @ %H:%M') }}</strong></p>
+        <p><a class="btn btn-purple" href="{{ url_for('views.index')}}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Return to stories list</a> </p>
     </div>
 </div>
 
@@ -26,12 +26,14 @@
     <div class="col-md-12">
         <h3>Events</h3>
         <form class="input-group margin-btm" type="get" action="{{ url_for('views.story', story_id=story.id)}}">
-            <input class="form-control update" id="q" type="text" name="q"  placeholder="Search events..." >
+            <input class="form-control update" id="q" type="text" name="q"  placeholder="Search events..." value={% if query %}'{{query}}'{% endif %}>
             <span class="input-group-btn">
-                <button class="btn btn-success update" id="search_submit" type="submit"><i class="fa fa-search" aria-hidden="true"></i> Submit</button>
+                <button class="btn btn-primary update" id="search_submit" type="submit"><i class="fa fa-search" aria-hidden="true"></i> Submit</button>
+            </span>
+            <span class="input-group-btn">
+                <a href='{{ url_for('views.story', story_id=story.id)}}' class="btn btn-purple update"><i class="fa fa-repeat" aria-hidden="true"></i> Reset</a>
             </span>
         </form>
-
     </div>
 </div>
 <div class="row">
@@ -44,6 +46,9 @@
         </div>
     </div>
     <div class="col-md-8">
+        {% if query %}
+            <p>Showing <span class="badge">{{ events|length }}</span> search result(s) for "{{ query }}"</p>
+        {% endif %}
         <table class="table table-bordered">
             <thead class="thead-default">
                 <tr>
