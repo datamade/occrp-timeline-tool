@@ -32,8 +32,6 @@ table, label,.control-label,.help-block,.checkbox,.radio { font-size: 14px; }
   padding-bottom: 19px;
 }
 
-.margin-btm { margin-bottom: 1em; }
-
 .container-narrow > hr {
   margin: 30px 0;
 }
@@ -45,6 +43,9 @@ table, label,.control-label,.help-block,.checkbox,.radio { font-size: 14px; }
   padding-left: 15px;
   padding-right: 15px;
 }
+
+/* Resuable atomic labels */
+.margin-btm { margin-bottom: 1em; }
 
 /* ===== INDEX ===== */
 div.story-form-head {

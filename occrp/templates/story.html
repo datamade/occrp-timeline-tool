@@ -25,11 +25,10 @@
 <div class="row">
     <div class="col-md-12">
         <h3>Events</h3>
-
-        <form class="input-group margin-btm" type="get" action=".">
-            <input class="form-control update" id="search_box" type="text" name="search_box"  placeholder="Search events..." >
+        <form class="input-group margin-btm" type="get" action="{{ url_for('views.story', story_id=story.id)}}">
+            <input class="form-control update" id="q" type="text" name="q"  placeholder="Search events..." >
             <span class="input-group-btn">
-                <button class="btn btn-success update" id="search_submit" type="submit" style="border-width: 0px;"><i class="fa fa-search" aria-hidden="true"></i> Submit</button>
+                <button class="btn btn-success update" id="search_submit" type="submit"><i class="fa fa-search" aria-hidden="true"></i> Submit</button>
             </span>
         </form>
 
@@ -54,7 +53,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for event in story.events %}
+                {% for event in events %}
                     <tr class="detailsControl">
                         <td><i class="fa fa-chevron-circle-right" aria-hidden="true"></i><i class="fa fa-chevron-circle-down" aria-hidden="true" style="display: none;"></i> {{ event.title }}</td>
                         {% if event.start_date_accuracy == 4 %}
