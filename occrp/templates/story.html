@@ -4,7 +4,12 @@
 <div class="row">
     <div class="col-sm-12">
         <h3>{{ story.title }}</h3>
-        <p>Last update: <strong>{{ story.updated_at.strftime('%Y %B %d @ %H:%M') }}</strong></p>
+        <p>Last update: 
+            {% if story.updated_at %}
+                <strong>{{ story.updated_at.strftime('%Y %B %d @ %H:%M') }}</strong></p>
+            {% else %}
+                <strong>No updates, yet!</strong>
+            {% endif %}
         <p><a class="btn btn-purple" href="{{ url_for('views.index')}}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Return to stories list</a> </p>
     </div>
 </div>
@@ -105,6 +110,7 @@
         </table>
     </div>
 </div>
+{% endif %}
 
 <div class="row">
     <div class="col-sm-12">
@@ -117,6 +123,5 @@
         {% include 'partials/event_form.html' %}
     </div>
 </div>
-{% endif %}
 
 {% endblock %}
