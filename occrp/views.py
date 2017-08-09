@@ -162,21 +162,31 @@ def get_facets(**kwargs):
     facets_query = '''
         SELECT trim({entity_type}.{field}) as facet, count({entity_type}.id) as facet_count 
         FROM story
-        JOIN events_stories ON story.id = events_stories.story_id 
-        JOIN event ON events_stories.event_id = event.id 
-        JOIN {join_table} ON event.id = {join_table}.event_id 
-        JOIN {entity_type} ON {join_table}.{entity_type}_id = {entity_type}.id 
+        LEFT JOIN events_stories ON story.id = events_stories.story_id 
+        LEFT JOIN event ON events_stories.event_id = event.id 
+        LEFT JOIN people_events ON event.id = people_events.event_id
+        LEFT JOIN person ON people_events.person_id = person.id
+        LEFT JOIN events_organizations ON event.id = events_organizations.event_id       
+        LEFT JOIN organization ON events_organizations.organization_id = organization.id 
+        LEFT JOIN events_sources ON event.id = events_sources.event_id       
+        LEFT JOIN source ON events_sources.source_id = source.id 
         WHERE story.id={story_id}
-        AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.title || ' ' || event.description || ' ' || event.significance)
-        GROUP BY {entity_type}.{field}
     '''.format(entity_type=kwargs['entity_type'],
                 field=kwargs['field'],  
                 join_table=kwargs['join_table'], 
-                story_id=kwargs['story_id'],
-                query=kwargs['query'])
+                story_id=kwargs['story_id'])
+
+    if kwargs['query']:
+        facets_query += '''
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.title || ' ' || event.description || ' ' || event.significance || ' ' || source.label || ' ' || person.name || ' ' || organization.name)
+            '''.format(query=kwargs['query'])
+
+    facets_query += '''
+        GROUP BY {entity_type}.{field}
+        '''.format(entity_type=kwargs['entity_type'], field=kwargs['field'])
 
     facets = engine.execute(facets_query).fetchall()
-    facets = [dict(f) for f in facets]
+    facets = [dict(f) for f in facets if f[0] != None]
     return facets
 
 
@@ -184,19 +194,24 @@ def get_query_results(story_id, query, order_by, sort_order):
     results_query = '''
         SELECT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
         FROM event as e
-        JOIN events_stories ON e.id = events_stories.event_id 
-        JOIN story ON events_stories.story_id = story.id
+        LEFT JOIN events_stories ON e.id = events_stories.event_id 
+        LEFT JOIN story ON events_stories.story_id = story.id
+        LEFT JOIN people_events ON e.id = people_events.event_id
+        LEFT JOIN person ON people_events.person_id = person.id
+        LEFT JOIN events_organizations ON e.id = events_organizations.event_id       
+        LEFT JOIN organization ON events_organizations.organization_id = organization.id 
+        LEFT JOIN events_sources ON e.id = events_sources.event_id       
+        LEFT JOIN source ON events_sources.source_id = source.id 
         WHERE story_id={story_id}
         '''.format(story_id=story_id)
 
     if query:
         results_query += '''
-            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance)
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance || ' ' || source.label || ' ' || person.name || ' ' || organization.name)
             '''.format(query=query)
 
     results_query += '''
         ORDER BY {order_by} {sort_order}
         '''.format(order_by=order_by,
                    sort_order=sort_order)
-
     return engine.execute(results_query).fetchall()

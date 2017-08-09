@@ -6,7 +6,7 @@
         <h3>{{ story.title }}</h3>
         <p>Last update: 
             {% if story.updated_at %}
-                <strong>{{ story.updated_at.strftime('%Y %B %d @ %H:%M') }}</strong></p>
+                <strong>{{ story.updated_at.strftime('%d %B %Y @ %H:%M') }}</strong></p>
             {% else %}
                 <strong>No updates, yet!</strong>
             {% endif %}
