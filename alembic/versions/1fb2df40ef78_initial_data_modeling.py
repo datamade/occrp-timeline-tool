@@ -27,6 +27,12 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('title')
     )
+    op.create_table('event_type',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
+    )
     op.create_foreign_key(None, 'event', 'event_type', ['event_type_id'], ['id'])
     op.create_table('organization',
     sa.Column('id', sa.Integer(), nullable=False),
