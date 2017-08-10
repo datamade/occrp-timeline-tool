@@ -10,9 +10,13 @@
     </div>
     <div id="collapse{{facet}}" class="panel-collapse collapse">
       <div class="panel-body">
-        {% for entity in facets[facet] %}
-          <p>{{entity['facet']}}<span class="badge badge-facet pull-right">{{entity['facet_count']}}</span></p>
-        {% endfor %}
+        {% if facets[facet] %}
+          {% for entity in facets[facet] %}
+            <p>{{entity['facet']}}<span class="badge badge-facet pull-right">{{entity['facet_count']}}</span></p>
+          {% endfor %}
+        {% else %}
+          <p>No related {{facet}} for the events shown in the table.</p>
+        {% endif %}
       </div>
     </div>
   </div>

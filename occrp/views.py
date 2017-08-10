@@ -8,7 +8,7 @@ from .models import *
 from .forms import StoryForm, EventForm
 from .database import db
 from .app_config import TIME_ZONE, DB_CONN
-from .utils import parseDateAccuracy
+from .utils import parseDateAccuracy, get_or_create
 
 views = Blueprint('views', __name__)
 engine = create_engine(DB_CONN, convert_unicode=True)
@@ -44,6 +44,13 @@ def index():
 def story(story_id):
     form = EventForm()
     story = Story.query.get(story_id)
+    query = request.args.get('q', None)
+    sort_order = request.args.get('sort', 'desc')
+    order_by = request.args.get('order_by', 'start_date')
+
+    toggle_order = 'asc'
+    if sort_order.lower() == 'asc':
+        toggle_order = 'desc'
 
     if form.validate_on_submit():
         title = form.data['title']
@@ -109,47 +116,23 @@ def story(story_id):
             form.title.errors.append('An event with this title already exists')
       
     
-    people_facets_query = '''
-        SELECT trim(person.name) as facet, count(person.id) as facet_count 
-        FROM story
-        JOIN events_stories ON story.id = events_stories.story_id 
-        JOIN event ON events_stories.event_id = event.id 
-        JOIN people_events ON event.id = people_events.event_id 
-        JOIN person ON people_events.person_id = person.id 
-        WHERE story.id={}
-        GROUP BY person.name
-    '''.format(story_id)
-
-    people_facets = engine.execute(people_facets_query).fetchall()
-    people_facets = [dict(p) for p in people_facets]
-
-    organizations_facets_query = '''
-        SELECT trim(organization.name) as facet, count(organization.id) as facet_count 
-        FROM story
-        JOIN events_stories ON story.id = events_stories.story_id 
-        JOIN event ON events_stories.event_id = event.id 
-        JOIN events_organizations ON event.id = events_organizations.event_id 
-        JOIN organization ON events_organizations.organization_id = organization.id 
-        WHERE story.id={}
-        GROUP BY organization.name
-    '''.format(story_id)
+    people_facets = get_facets(entity_type='person', 
+                               field='name', 
+                               join_table='people_events', 
+                               story_id=story.id, 
+                               query=query)  
     
-    organization_facets = engine.execute(organizations_facets_query).fetchall()
-    organization_facets = [dict(o) for o in organization_facets]
-
-    sources_facets_query = '''
-        SELECT trim(source.label) as facet, count(source.id) as facet_count 
-        FROM story
-        JOIN events_stories ON story.id = events_stories.story_id 
-        JOIN event ON events_stories.event_id = event.id 
-        JOIN events_sources ON event.id = events_sources.event_id 
-        JOIN source ON events_sources.source_id = source.id 
-        WHERE story.id={}
-        GROUP BY source.label
-    '''.format(story_id)
+    organization_facets = get_facets(entity_type='organization', 
+                                    field='name', 
+                                    join_table='events_organizations', 
+                                    story_id=story.id, 
+                                    query=query) 
     
-    source_facets = engine.execute(sources_facets_query).fetchall()
-    source_facets = [dict(s) for s in source_facets]
+    source_facets = get_facets(entity_type='source', 
+                              field='label', 
+                              join_table='events_sources', 
+                              story_id=story.id, 
+                              query=query)
 
     facets = {
         'People': people_facets,
@@ -157,10 +140,16 @@ def story(story_id):
         'Sources': source_facets,
     }
 
+    events = get_query_results(story_id, query, order_by, sort_order)
+        
     return render_template('story.html', 
                           form=form,
                           story=story,
                           facets=facets,
+                          events=events,
+                          query=query,
+                          order_by=order_by,
+                          toggle_order=toggle_order
                           )
 
 
@@ -169,12 +158,60 @@ def about():
     return render_template('about.html')
 
 
-def get_or_create(model, **kwargs):
-    instance = db.session.query(model).filter_by(**kwargs).first()
-    if instance:
-        return (instance, False)
-    else:
-        instance = model(**kwargs)
-        db.session.add(instance)
-        db.session.commit()
-        return (instance, True)
+def get_facets(**kwargs):
+    facets_query = '''
+        SELECT trim({entity_type}.{field}) as facet, count({entity_type}.id) as facet_count 
+        FROM story
+        LEFT JOIN events_stories ON story.id = events_stories.story_id 
+        LEFT JOIN event ON events_stories.event_id = event.id 
+        LEFT JOIN people_events ON event.id = people_events.event_id
+        LEFT JOIN person ON people_events.person_id = person.id
+        LEFT JOIN events_organizations ON event.id = events_organizations.event_id       
+        LEFT JOIN organization ON events_organizations.organization_id = organization.id 
+        LEFT JOIN events_sources ON event.id = events_sources.event_id       
+        LEFT JOIN source ON events_sources.source_id = source.id 
+        WHERE story.id={story_id}
+    '''.format(entity_type=kwargs['entity_type'],
+                field=kwargs['field'],  
+                join_table=kwargs['join_table'], 
+                story_id=kwargs['story_id'])
+
+    if kwargs['query']:
+        facets_query += '''
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.title || ' ' || event.description || ' ' || event.significance || ' ' || source.label || ' ' || person.name || ' ' || organization.name)
+            '''.format(query=kwargs['query'])
+
+    facets_query += '''
+        GROUP BY {entity_type}.{field}
+        '''.format(entity_type=kwargs['entity_type'], field=kwargs['field'])
+
+    facets = engine.execute(facets_query).fetchall()
+    facets = [dict(f) for f in facets if f[0] != None]
+    return facets
+
+
+def get_query_results(story_id, query, order_by, sort_order):
+    results_query = '''
+        SELECT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
+        FROM event as e
+        LEFT JOIN events_stories ON e.id = events_stories.event_id 
+        LEFT JOIN story ON events_stories.story_id = story.id
+        LEFT JOIN people_events ON e.id = people_events.event_id
+        LEFT JOIN person ON people_events.person_id = person.id
+        LEFT JOIN events_organizations ON e.id = events_organizations.event_id       
+        LEFT JOIN organization ON events_organizations.organization_id = organization.id 
+        LEFT JOIN events_sources ON e.id = events_sources.event_id       
+        LEFT JOIN source ON events_sources.source_id = source.id 
+        WHERE story_id={story_id}
+        '''.format(story_id=story_id)
+
+    if query:
+        results_query += '''
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance || ' ' || source.label || ' ' || person.name || ' ' || organization.name)
+            '''.format(query=query)
+
+    results_query += '''
+        ORDER BY {order_by} {sort_order}
+        '''.format(order_by=order_by,
+                   sort_order=sort_order)
+    return engine.execute(results_query).fetchall()

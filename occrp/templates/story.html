@@ -4,20 +4,13 @@
 <div class="row">
     <div class="col-sm-12">
         <h3>{{ story.title }}</h3>
-        <p>Last update: {{ story.updated_at }}</p>
-        <p><a class="btn btn-warning" href="{{ url_for('views.index')}}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Return to stories list</a> </p>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-12">
-        <h3>Add an event and related people, organizations, and sources to this story</h3>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        {% include 'partials/event_form.html' %}
+        <p>Last update: 
+            {% if story.updated_at %}
+                <strong>{{ story.updated_at.strftime('%d %B %Y @ %H:%M') }}</strong></p>
+            {% else %}
+                <strong>No updates, yet!</strong>
+            {% endif %}
+        <p><a class="btn btn-purple" href="{{ url_for('views.index')}}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Return to stories list</a> </p>
     </div>
 </div>
 
@@ -25,6 +18,15 @@
 <div class="row">
     <div class="col-md-12">
         <h3>Events</h3>
+        <form class="input-group margin-btm" type="get" action="{{ url_for('views.story', story_id=story.id)}}">
+            <input class="form-control update" id="q" type="text" name="q"  placeholder="Search events..." value={% if query %}'{{query}}'{% endif %}>
+            <span class="input-group-btn">
+                <button class="btn btn-primary update" id="search_submit" type="submit"><i class="fa fa-search" aria-hidden="true"></i> Submit</button>
+            </span>
+            <span class="input-group-btn">
+                <a href='{{ url_for('views.story', story_id=story.id)}}' class="btn btn-purple update"><i class="fa fa-repeat" aria-hidden="true"></i> Reset</a>
+            </span>
+        </form>
     </div>
 </div>
 <div class="row">
@@ -37,16 +39,40 @@
         </div>
     </div>
     <div class="col-md-8">
+        {% if query %}
+            <p>Showing <span class="badge">{{ events|length }}</span> search result(s) for "{{ query }}"</p>
+        {% endif %}
         <table class="table table-bordered">
             <thead class="thead-default">
                 <tr>
-                    <th class="story-width">Title</th>
-                    <th>Start date</th>
-                    <th>End date</th>
+                    <th class="story-width">
+                        <a href="{{url_for('views.story', story_id=story.id)}}?{{ request|query_transform(order_by='title', sort=toggle_order) }}">
+                            Title
+                            {% if order_by == 'title' %}
+                                {{ toggle_order|get_sort_icon|safe }}
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{url_for('views.story', story_id=story.id)}}?{{ request|query_transform(order_by='start_date', sort=toggle_order) }}">
+                            Start date
+                            {% if order_by == 'start_date' %}
+                                {{ toggle_order|get_sort_icon|safe }}
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{url_for('views.story', story_id=story.id)}}?{{ request|query_transform(order_by='end_date', sort=toggle_order) }}">
+                            End date
+                            {% if order_by == 'end_date' %}
+                                {{ toggle_order|get_sort_icon|safe }}
+                            {% endif %}
+                        </a>
+                    </th>
                 </tr>
             </thead>
             <tbody>
-                {% for event in story.events %}
+                {% for event in events %}
                     <tr class="detailsControl">
                         <td><i class="fa fa-chevron-circle-right" aria-hidden="true"></i><i class="fa fa-chevron-circle-down" aria-hidden="true" style="display: none;"></i> {{ event.title }}</td>
                         {% if event.start_date_accuracy == 4 %}
@@ -85,5 +111,17 @@
     </div>
 </div>
 {% endif %}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h3>Add an event and related people, organizations, and sources to this story</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        {% include 'partials/event_form.html' %}
+    </div>
+</div>
 
 {% endblock %}

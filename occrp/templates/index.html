@@ -29,7 +29,7 @@
                     </div>
 
                 <div class="form-group col-sm-12">
-                    <button class="btn btn-primary btn-block" type="submit"><i class="fa fa-plus-circle" aria-hidden="true"></i> Create</button>
+                    <button class="btn btn-primary btn-block margin-btm" type="submit"><i class="fa fa-plus-circle" aria-hidden="true"></i> Create</button>
                 </div>
             </form>
         </div>
@@ -55,12 +55,12 @@
                         <td class="story-width"><a href="{{ url_for('views.story', story_id=story.id) }}">{{ story.title }}</a></td>
                         <td class="updated-width">
                             {% if story.updated_at %}
-                                {{ story.updated_at }}
+                                {{ story.updated_at.strftime('%d %B %Y @ %H:%M') }}
                             {% endif %}
                         </td>
                         <td class="created-width">
                             {% if story.created_at %}
-                                {{ story.created_at }}
+                                {{ story.created_at.strftime('%d %B %Y @ %H:%M') }}
                             {% endif %}
                         </td>
                     </tr>
