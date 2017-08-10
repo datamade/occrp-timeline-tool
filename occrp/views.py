@@ -178,7 +178,7 @@ def get_facets(**kwargs):
 
     if kwargs['query']:
         facets_query += '''
-            AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.title || ' ' || event.description || ' ' || event.significance || ' ' || source.label || ' ' || person.name || ' ' || organization.name)
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.title || ' ' || event.description || ' ' || event.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
             '''.format(query=kwargs['query'])
 
     facets_query += '''
@@ -207,11 +207,14 @@ def get_query_results(story_id, query, order_by, sort_order):
 
     if query:
         results_query += '''
-            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance || ' ' || source.label || ' ' || person.name || ' ' || organization.name)
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
             '''.format(query=query)
 
     results_query += '''
         ORDER BY {order_by} {sort_order}
         '''.format(order_by=order_by,
                    sort_order=sort_order)
+
+    print(results_query)
+
     return engine.execute(results_query).fetchall()
