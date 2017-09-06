@@ -2,6 +2,8 @@ from datetime import datetime
 
 from datetime_distance import DateTimeComparator
 
+from .database import db
+
 def parseDateAccuracy(datefield):
     datefield = DateTimeComparator().parse_resolution(datefield, dayfirst=True)[0]
     
@@ -35,3 +37,14 @@ def parseDateAccuracy(datefield):
     datefield = datetime(**guts)
 
     return datefield, accuracy
+
+
+def get_or_create(model, **kwargs):
+    instance = db.session.query(model).filter_by(**kwargs).first()
+    if instance:
+        return (instance, False)
+    else:
+        instance = model(**kwargs)
+        db.session.add(instance)
+        db.session.commit()
+        return (instance, True)

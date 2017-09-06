@@ -9,26 +9,49 @@ body {
   --purple-shade: #76323f;
 }
 
+/* ===== GLOBAL ===== */
 table, label,.control-label,.help-block,.checkbox,.radio { font-size: 14px; }
+
 .alert { font-size: 1em; font-weight: 500; }
+
+.alert-dismissable, .alert-dismissible  { 
+  background-color: #EBFAFF;
+  border-color: #D6F5FF;
+}
 
 .label:hover { text-decoration: none; }
 
-.showmore-content {
-    overflow: hidden;
-    height: 165px;
+.header {
+  border-bottom: 1px solid #e5e5e5;
 }
 
-.showmore-content p {
-    font-size: 14px;
-    line-height: 20px;
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+  padding-bottom: 19px;
 }
 
-.showmore, .showless {
-    margin-top: 10px;
+.container-narrow > hr {
+  margin: 30px 0;
 }
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
+.btn-purple {
+  background-color: var(--purple-shade);
+  color: #fff;
+}
+
+.btn-purple:focus {
+  background-color: var(--purple-shade);
+  color: #fff;
+}
+
+.btn-purple:hover {
+  background-color: #8F3D4C;
+  color: #fff;
+}
+
+/* Everything gets side spacing for mobile first views */
 .header,
 .marketing,
 .footer {
@@ -36,12 +59,10 @@ table, label,.control-label,.help-block,.checkbox,.radio { font-size: 14px; }
   padding-right: 15px;
 }
 
-/* Custom page header */
-.header {
-  border-bottom: 1px solid #e5e5e5;
-}
+/* Resuable atomic labels */
+.margin-btm { margin-bottom: 1em; }
 
-/* Style the form on the index page */
+/* ===== INDEX ===== */
 div.story-form-head {
   background-color: var(--purple-shade);
   color: #fff;
@@ -55,10 +76,6 @@ div.story-form-body {
   background-color: #efefef;
 }
 
-div.story-form-body .btn {
-  margin-bottom: 1em;
-}
-
 div.story-form-input {
   margin-top: 3em;
   margin-bottom: 3em;
@@ -68,8 +85,7 @@ div.story-form-input {
 .updated-width { width: 20%; }
 .created-width { width: 20%; }
 
-/* Style the form on the story detail */
-
+/* ===== STORY DETAIL ===== */
 .form-horizontal .form-group {
   margin-left: 0;
   margin-right: 0;
@@ -79,31 +95,26 @@ div.story-form-input {
   width: 100%;
 }
 
-/* Make the masthead heading the same height as the navigation */
-.header h3 {
-  margin-top: 0;
-  margin-bottom: 0;
-  line-height: 40px;
-  padding-bottom: 19px;
+div.panel-body > li { list-style: none; }
+
+.panel-group .panel { margin-bottom: 5px; }
+
+.thead-default { background-color: #f5f5f5; }
+
+.input-group-btn > .btn, .input-group-btn:last-child>.btn, .input-group-btn:last-child > .btn-group { 
+  margin-left: 4px; 
 }
 
-/* Customize container */
-.container-narrow > hr {
-  margin: 30px 0;
+.ui-menu .ui-menu-item {
+    font-size: 18px;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 6px;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-}
-.jumbotron .btn {
-  font-size: 21px;
-  padding: 14px 24px;
-}
-
-.jumbotron li {
-  font-size: 16px;
+.ui-menu-item a.ui-state-focus {
+    text-decoration: none;
+    display: block;
+    border-radius: 0px;
 }
 
 /* Responsive: Portrait tablets and up */
@@ -119,27 +130,11 @@ div.story-form-input {
   .header {
     margin-bottom: 30px;
   }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
 }
 
 .nowrap { white-space:nowrap; }
 
-/* MAP styles */
-#map {
-    min-height: 500px;
-}
-.leaflet-top.leaflet-left{
-    margin-left: 20px;
-}
-.row.filters {
-    margin-left: 5px;
-}
-
 /* Datepicker styles */
-
 .ui-widget {
     font-size: 0.9em;
 }
@@ -234,25 +229,4 @@ div.story-form-input {
 /* Response */
 .response-table {
     width: 100%;
-}
-
-/* Map legend styles */
-.legend {
-    line-height: 18px;
-    color: #555;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
-}
-
-.legend div {
-    padding: 10px;
-}
-
-.legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.7;
 }

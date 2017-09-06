@@ -1,6 +1,6 @@
 # occrp-timeline-tool
 
-The OCCRP Timeline Tool helps reporters capture, organize, and view sequences of events and how they relate to networks of organizations, people, and sources. 
+The [OCCRP Timeline Tool](https://occrp.datamade.us) helps reporters capture, organize, and view sequences of events and how they relate to networks of organizations, people, and sources. 
 
 ## Get started
 To get started, run the following commands in your shell:
