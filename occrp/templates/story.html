@@ -74,7 +74,28 @@
 {% block extra_javascript %}
 <script type="text/javascript">
     $(document).ready(function(e){
-        console.log('yup');
-    })
+         // Use jQuery-UI autocomplete function.
+        $("#person-input").autocomplete({
+            // Set the source to an AJAX callback, which fires the person_autocomplete view.
+            source: function (request, response) {
+                jQuery.get("{{ url_for('views.person_autocomplete')}}", {
+                    q: request.term
+                }, function (data) {
+                      // Return an array of strings as a response.
+                      var person_names = []
+                      if (data) {
+                        $.each(data, function(index, value) {
+                          person_names.push(value.name)
+                        });
+                      }
+                      response(person_names);
+                });
+            },
+            minLength: 1,
+            select: function( event, ui ) {
+              console.log("Selected: " + ui.item.value);
+            }
+        });
+    });
 </script>
 {% endblock %}

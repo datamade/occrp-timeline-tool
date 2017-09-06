@@ -144,6 +144,25 @@ def about():
     return render_template('about.html')
 
 
+@views.route('/person-autocomplete/')
+def person_autocomplete():
+    term = request.args['q']
+    if term:
+        people = Person.query.filter_by(name__icontains=term).all()
+
+    person_results = []
+    for person in people:
+        results.append({
+            'name': str(person.name),
+            'id': person.id,
+        })
+
+    response = make_response(json.dumps(person_results))
+    response.headers['Content-Type'] = 'application/json'
+
+    return response
+
+
 def get_or_create(model, **kwargs):
     instance = db.session.query(model).filter_by(**kwargs).first()
     if instance:

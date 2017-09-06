@@ -97,7 +97,7 @@
                 <div class="form-group col-sm-12">
             {% endif %}
                 <h4>Person involved</h4>
-                {{ form.person_name(class="form-control") }}
+                {{ form.person_name(class="form-control", id="person-input") }}
                 {% if form.person_name.errors %}
                     {% for error in form.person_name.errors %}
                         <span class="help-block">{{ error }}</span>
