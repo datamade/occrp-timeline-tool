@@ -231,7 +231,6 @@ def get_facets(**kwargs):
     return facets
 
 
-# def get_query_results(story_id, query, select_facet, order_by, sort_order):
 def get_query_results(**kwargs):
     results_query = '''
         SELECT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
