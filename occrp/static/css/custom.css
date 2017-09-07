@@ -105,6 +105,18 @@ div.panel-body > li { list-style: none; }
   margin-left: 4px; 
 }
 
+.ui-menu .ui-menu-item {
+    font-size: 18px;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 6px;
+}
+
+.ui-menu-item a.ui-state-focus {
+    text-decoration: none;
+    display: block;
+    border-radius: 0px;
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   /* Remove the padding we set earlier */

@@ -125,3 +125,43 @@
 </div>
 
 {% endblock %}
+{% block extra_javascript %}
+<script type="text/javascript">
+    function make_source(url) {
+        return function (request, response) {
+            jQuery.get(url, {
+                q: request.term
+            }, function (data) {
+              // Return an array of strings as a response.
+              var suggestions = []
+              if (data) {
+                $.each(data, function(index, value) {
+                  suggestions.push(value.suggestion)
+                });
+              }
+
+              response(suggestions);
+            });
+        }
+    };
+
+    $(document).ready(function(e){
+         // Use jQuery-UI autocomplete function.
+        $("#person-input").autocomplete({
+            source: make_source("{{ url_for('views.person_autocomplete')}}"),
+            minLength: 1,
+        });
+
+        $("#organization-input").autocomplete({
+            source: make_source("{{ url_for('views.organization_autocomplete')}}"),
+            minLength: 1,
+        });
+
+        $("#source-input").autocomplete({
+            source: make_source("{{ url_for('views.source_autocomplete')}}"),
+            minLength: 1,
+        });
+
+    });
+</script>
+{% endblock %}

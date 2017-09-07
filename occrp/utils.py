@@ -1,6 +1,10 @@
 from datetime import datetime
+import json
 
 from datetime_distance import DateTimeComparator
+from flask import make_response
+import sqlalchemy as sa
+from sqlalchemy import create_engine
 
 from .database import db
 
@@ -48,3 +52,19 @@ def get_or_create(model, **kwargs):
         db.session.add(instance)
         db.session.commit()
         return (instance, True)
+
+
+def autocomplete_results(model_attr, term):
+    # model_attr refers to a specified model + field, e.g., Person.name
+    where = model_attr.ilike('%{}%'.format(term))
+
+    results = db.session.query(sa.distinct(model_attr))\
+                     .filter(where)\
+                     .order_by(model_attr)
+
+    results_obj = [{'suggestion': c[0]} for c in results.all()]
+
+    response = make_response(json.dumps(results_obj))
+    response.headers['Content-Type'] = 'application/json'
+
+    return response

@@ -9,6 +9,7 @@
     <title>{% block title %}{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
     <link href="{{ url_for('static', filename='css/bootstrap.yeti.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/bootstrap-nav-wizard.css') }}" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -78,6 +79,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{ url_for('static', filename='js/jquery-1.10.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-ui.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/analytics_lib.js') }}"></script>
 

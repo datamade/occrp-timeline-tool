@@ -97,7 +97,7 @@
                 <div class="form-group col-sm-12">
             {% endif %}
                 <h4>Person involved</h4>
-                {{ form.person_name(class="form-control") }}
+                {{ form.person_name(class="form-control", id="person-input") }}
                 {% if form.person_name.errors %}
                     {% for error in form.person_name.errors %}
                         <span class="help-block">{{ error }}</span>
@@ -115,7 +115,7 @@
                 <div class="form-group col-sm-12">
             {% endif %}
                 <h4>Organization</h4>
-                {{ form.organization(class="form-control") }}
+                {{ form.organization(class="form-control", id="organization-input") }}
                 {% if form.organization.errors %}
                     {% for error in form.organization.errors %}
                         <span class="help-block">{{ error }}</span>
@@ -133,7 +133,7 @@
                 <div class="form-group col-sm-12">
             {% endif %}
                 <h4>Source</h4>
-                {{ form.source_label(class="form-control") }}
+                {{ form.source_label(class="form-control", id="source-input") }}
                 {% if form.source_label.errors %}
                     {% for error in form.source_label.errors %}
                         <span class="help-block">{{ error }}</span>
@@ -148,7 +148,9 @@
     <div class="row">
       <div class="form-group col-sm-12">
           <br>
-          <button class="btn btn-primary btn-block" type="submit"><i class="fa fa-plus-circle" aria-hidden="true"></i> Create</button>
+          <button class="btn btn-primary btn-block" type="submit">
+              <i class="fa fa-plus-circle" aria-hidden="true"></i> Create
+          </button>
       </div>
     </div>
 

@@ -1,14 +1,15 @@
 import pytz
 from datetime import datetime, timedelta
+import json
 from sqlalchemy import create_engine
 
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, make_response
 
 from .models import * 
 from .forms import StoryForm, EventForm
 from .database import db
 from .app_config import TIME_ZONE, DB_CONN
-from .utils import parseDateAccuracy, get_or_create
+from .utils import parseDateAccuracy, get_or_create, autocomplete_results
 
 views = Blueprint('views', __name__)
 engine = create_engine(DB_CONN, convert_unicode=True)
@@ -158,6 +159,27 @@ def about():
     return render_template('about.html')
 
 
+@views.route('/person-autocomplete/')
+def person_autocomplete():
+    term = request.args['q']
+
+    return autocomplete_results(Person.name, term)
+
+
+@views.route('/organization-autocomplete/')
+def organization_autocomplete():
+    term = request.args['q']
+
+    return autocomplete_results(Organization.name, term)
+
+
+@views.route('/source-autocomplete/')
+def source_autocomplete():
+    term = request.args['q']
+
+    return autocomplete_results(Source.label, term)
+
+
 def get_facets(**kwargs):
     facets_query = '''
         SELECT trim({entity_type}.{field}) as facet, count({entity_type}.id) as facet_count 
@@ -215,6 +237,5 @@ def get_query_results(story_id, query, order_by, sort_order):
         '''.format(order_by=order_by,
                    sort_order=sort_order)
 
-    print(results_query)
-
     return engine.execute(results_query).fetchall()
+
