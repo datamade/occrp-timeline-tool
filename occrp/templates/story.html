@@ -145,30 +145,21 @@
         }
     };
 
-    function autocomplete_select() {
-        return function( event, ui ) {
-          console.log("Selected: " + ui.item.value);
-        }
-    };
-
     $(document).ready(function(e){
          // Use jQuery-UI autocomplete function.
         $("#person-input").autocomplete({
             source: make_source("{{ url_for('views.person_autocomplete')}}"),
             minLength: 1,
-            select: autocomplete_select(),
         });
 
         $("#organization-input").autocomplete({
             source: make_source("{{ url_for('views.organization_autocomplete')}}"),
             minLength: 1,
-            select: autocomplete_select(),
         });
 
         $("#source-input").autocomplete({
             source: make_source("{{ url_for('views.source_autocomplete')}}"),
             minLength: 1,
-            select: autocomplete_select(),
         });
 
     });
