@@ -149,7 +149,12 @@ def story(story_id):
 
     facets = OrderedDict(sorted(facets.items()))
 
-    events = get_query_results(story_id, query, select_facet, order_by, sort_order)
+    events = get_query_results(story_id=story_id, 
+                               query=query, 
+                               select_facet=select_facet, 
+                               order_by=order_by, 
+                               sort_order=sort_order,
+                               )
         
     return render_template('story.html', 
                           form=form,
@@ -160,7 +165,7 @@ def story(story_id):
                           select_facet=select_facet,
                           type_facet=type_facet,
                           order_by=order_by,
-                          toggle_order=toggle_order
+                          toggle_order=toggle_order,
                           )
 
 
@@ -226,7 +231,8 @@ def get_facets(**kwargs):
     return facets
 
 
-def get_query_results(story_id, query, select_facet, order_by, sort_order):
+# def get_query_results(story_id, query, select_facet, order_by, sort_order):
+def get_query_results(**kwargs):
     results_query = '''
         SELECT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
         FROM event as e
@@ -239,22 +245,22 @@ def get_query_results(story_id, query, select_facet, order_by, sort_order):
         LEFT JOIN events_sources ON e.id = events_sources.event_id       
         LEFT JOIN source ON events_sources.source_id = source.id 
         WHERE story_id={story_id}
-        '''.format(story_id=story_id)
+        '''.format(story_id=kwargs['story_id'])
 
-    if query:
+    if kwargs['query']:
         results_query += '''
             AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
-            '''.format(query=query)
+            '''.format(query=kwargs['query'])
 
-    if select_facet:
+    if kwargs['select_facet']:
         results_query += '''
         AND (person.name='{select_facet}' or organization.name='{select_facet}' or source.label='{select_facet}')
-        '''.format(select_facet=select_facet)
+        '''.format(select_facet=kwargs['select_facet'])
 
     results_query += '''
         ORDER BY {order_by} {sort_order}
-        '''.format(order_by=order_by,
-                   sort_order=sort_order)
+        '''.format(order_by=kwargs['order_by'],
+                   sort_order=kwargs['sort_order'])
 
     return engine.execute(results_query).fetchall()
 
