@@ -2,6 +2,7 @@ import pytz
 from datetime import datetime, timedelta
 import json
 from sqlalchemy import create_engine
+from collections import OrderedDict
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request, make_response
 
@@ -46,6 +47,8 @@ def story(story_id):
     form = EventForm()
     story = Story.query.get(story_id)
     query = request.args.get('q', None)
+    select_facet = request.args.get('facet', None)
+    type_facet = request.args.get('type', None)
     sort_order = request.args.get('sort', 'desc')
     order_by = request.args.get('order_by', 'start_date')
 
@@ -121,19 +124,22 @@ def story(story_id):
                                field='name', 
                                join_table='people_events', 
                                story_id=story.id, 
-                               query=query)  
+                               query=query,
+                               select_facet=select_facet)  
     
     organization_facets = get_facets(entity_type='organization', 
                                     field='name', 
                                     join_table='events_organizations', 
                                     story_id=story.id, 
-                                    query=query) 
+                                    query=query,
+                                    select_facet=select_facet) 
     
     source_facets = get_facets(entity_type='source', 
                               field='label', 
                               join_table='events_sources', 
                               story_id=story.id, 
-                              query=query)
+                              query=query,
+                              select_facet=select_facet)
 
     facets = {
         'People': people_facets,
@@ -141,7 +147,9 @@ def story(story_id):
         'Sources': source_facets,
     }
 
-    events = get_query_results(story_id, query, order_by, sort_order)
+    facets = OrderedDict(sorted(facets.items()))
+
+    events = get_query_results(story_id, query, select_facet, order_by, sort_order)
         
     return render_template('story.html', 
                           form=form,
@@ -149,6 +157,8 @@ def story(story_id):
                           facets=facets,
                           events=events,
                           query=query,
+                          select_facet=select_facet,
+                          type_facet=type_facet,
                           order_by=order_by,
                           toggle_order=toggle_order
                           )
@@ -195,13 +205,17 @@ def get_facets(**kwargs):
         WHERE story.id={story_id}
     '''.format(entity_type=kwargs['entity_type'],
                 field=kwargs['field'],  
-                join_table=kwargs['join_table'], 
                 story_id=kwargs['story_id'])
 
     if kwargs['query']:
         facets_query += '''
             AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.title || ' ' || event.description || ' ' || event.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
             '''.format(query=kwargs['query'])
+
+    if kwargs['select_facet']:
+        facets_query += '''
+            AND (person.name='{select_facet}' or organization.name='{select_facet}' or source.label='{select_facet}')
+            '''.format(select_facet=kwargs['select_facet'])
 
     facets_query += '''
         GROUP BY {entity_type}.{field}
@@ -212,7 +226,7 @@ def get_facets(**kwargs):
     return facets
 
 
-def get_query_results(story_id, query, order_by, sort_order):
+def get_query_results(story_id, query, select_facet, order_by, sort_order):
     results_query = '''
         SELECT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
         FROM event as e
@@ -231,6 +245,11 @@ def get_query_results(story_id, query, order_by, sort_order):
         results_query += '''
             AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
             '''.format(query=query)
+
+    if select_facet:
+        results_query += '''
+        AND (person.name='{select_facet}' or organization.name='{select_facet}' or source.label='{select_facet}')
+        '''.format(select_facet=select_facet)
 
     results_query += '''
         ORDER BY {order_by} {sort_order}

@@ -162,6 +162,10 @@
             minLength: 1,
         });
 
+        $(".facet-link").on("click", function(e) {
+            e.stopPropagation();
+        });
+
     });
 </script>
 {% endblock %}
