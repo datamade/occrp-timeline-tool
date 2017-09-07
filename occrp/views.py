@@ -9,7 +9,7 @@ from .models import *
 from .forms import StoryForm, EventForm
 from .database import db
 from .app_config import TIME_ZONE, DB_CONN
-from .utils import parseDateAccuracy, get_or_create
+from .utils import parseDateAccuracy, get_or_create, autocomplete_results
 
 views = Blueprint('views', __name__)
 engine = create_engine(DB_CONN, convert_unicode=True)
@@ -162,30 +162,22 @@ def about():
 @views.route('/person-autocomplete/')
 def person_autocomplete():
     term = request.args['q']
-    if term:
-        where = Person.name.ilike('%{}%'.format(term))
 
-        people = db.session.query(sa.distinct(Person.name))\
-                       .filter(where)\
-                       .order_by(Person.name)
-
-    people = [{'name': c[0]} for c in people.all()]
-
-    response = make_response(json.dumps(people))
-    response.headers['Content-Type'] = 'application/json'
-
-    return response
+    return autocomplete_results(Person.name, term)
 
 
-def get_or_create(model, **kwargs):
-    instance = db.session.query(model).filter_by(**kwargs).first()
-    if instance:
-        return (instance, False)
-    else:
-        instance = model(**kwargs)
-        db.session.add(instance)
-        db.session.commit()
-        return (instance, True)
+@views.route('/organization-autocomplete/')
+def organization_autocomplete():
+    term = request.args['q']
+
+    return autocomplete_results(Organization.name, term)
+
+
+@views.route('/source-autocomplete/')
+def source_autocomplete():
+    term = request.args['q']
+
+    return autocomplete_results(Source.label, term)
 
 
 def get_facets(**kwargs):

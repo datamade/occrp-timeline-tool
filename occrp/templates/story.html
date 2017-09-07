@@ -127,30 +127,50 @@
 {% endblock %}
 {% block extra_javascript %}
 <script type="text/javascript">
+    function make_source(url) {
+        return function (request, response) {
+            jQuery.get(url, {
+                q: request.term
+            }, function (data) {
+              // Return an array of strings as a response.
+              var suggestions = []
+              if (data) {
+                $.each(data, function(index, value) {
+                  suggestions.push(value.suggestion)
+                });
+              }
+
+              response(suggestions);
+            });
+        }
+    };
+
+    function autocomplete_select() {
+        return function( event, ui ) {
+          console.log("Selected: " + ui.item.value);
+        }
+    };
+
     $(document).ready(function(e){
          // Use jQuery-UI autocomplete function.
         $("#person-input").autocomplete({
-            // Set the source to an AJAX callback, which fires the person_autocomplete view.
-            source: function (request, response) {
-                jQuery.get("{{ url_for('views.person_autocomplete')}}", {
-                    q: request.term
-                }, function (data) {
-                      // Return an array of strings as a response.
-                      var person_names = []
-                      if (data) {
-                        $.each(data, function(index, value) {
-                          person_names.push(value.name)
-                        });
-                      }
-
-                      response(person_names);
-                });
-            },
+            source: make_source("{{ url_for('views.person_autocomplete')}}"),
             minLength: 1,
-            select: function( event, ui ) {
-              console.log("Selected: " + ui.item.value);
-            }
+            select: autocomplete_select(),
         });
+
+        $("#organization-input").autocomplete({
+            source: make_source("{{ url_for('views.organization_autocomplete')}}"),
+            minLength: 1,
+            select: autocomplete_select(),
+        });
+
+        $("#source-input").autocomplete({
+            source: make_source("{{ url_for('views.source_autocomplete')}}"),
+            minLength: 1,
+            select: autocomplete_select(),
+        });
+
     });
 </script>
 {% endblock %}
