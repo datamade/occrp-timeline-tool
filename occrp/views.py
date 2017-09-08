@@ -153,8 +153,7 @@ def story(story_id):
                                query=query, 
                                select_facet=select_facet, 
                                order_by=order_by, 
-                               sort_order=sort_order,
-                               )
+                               sort_order=sort_order)
         
     return render_template('story.html', 
                           form=form,
@@ -165,8 +164,7 @@ def story(story_id):
                           select_facet=select_facet,
                           type_facet=type_facet,
                           order_by=order_by,
-                          toggle_order=toggle_order,
-                          )
+                          toggle_order=toggle_order)
 
 
 @views.route('/about')
