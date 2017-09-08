@@ -29,9 +29,16 @@ def create_app(name=__name__, settings_override={}):
     @app.template_filter('query_transform')
     def query_transform(request, **kwargs):
         query = request.args.get('q', None)
+        select_facet = request.args.get('facet', None)
+        type_facet = request.args.get('type', None)
+
         request_args = {}
         if query:
-            request_args = {'q': query}
+            request_args['q'] = query
+        if select_facet:
+            request_args['facet'] = select_facet
+        if type_facet:
+            request_args['type'] = type_facet
         for k,v in kwargs.items():
             request_args[k] = v
         encoded = urllib.parse.urlencode(request_args)
