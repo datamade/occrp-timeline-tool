@@ -11,14 +11,15 @@ class StoryForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
 
 
-# Upon data entry, we should trim all strings
+# Upon data entry: we should trim all strings, as they get entered
 class EventForm(FlaskForm):
-    title = StringField('title', validators=[DataRequired()])
+    description = StringField('description', validators=[DataRequired()])
     start_date = StringField('start_date')
     end_date = StringField('end_date')
-    description = StringField('description')
     significance = StringField('significance')
     source_label = StringField('source_label')
+    event_type = StringField('event_type')
+    location = StringField('location')
     person_name = StringField('person_name') # Should allow for multiple inputs
     organization = StringField('organization') # Should allow for multiple inputs
 

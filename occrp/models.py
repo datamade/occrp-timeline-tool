@@ -87,7 +87,7 @@ class EventType(db.Model):
 class Location(db.Model):
     id = Column(Integer, primary_key=True)
     location = Column(String, nullable=False, unique=True)
-    events = relationship('Event', backref='event_type', lazy='dynamic')
+    events = relationship('Event', backref='location', lazy='dynamic')
 
 
 class Story(db.Model):

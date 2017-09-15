@@ -57,14 +57,11 @@ def story(story_id):
         toggle_order = 'desc'
 
     if form.validate_on_submit():
-        title = form.data['title']
         start_date = form.data['start_date']
         end_date = form.data['end_date']
         description = form.data['description']
         significance = form.data['significance']
         source_label = form.data['source_label']
-        # organization = form.data['organization']
-        # person_name = form.data['person_name']
         organization_list = request.form.getlist('organization')
         person_name_list = request.form.getlist('person_name')
 
@@ -81,7 +78,6 @@ def story(story_id):
             end_date_accuracy = None
         
         event, event_created = get_or_create(Event, 
-                          title=title, 
                           start_date=start_date,
                           start_date_accuracy=start_date_accuracy,
                           end_date=end_date,
@@ -121,7 +117,7 @@ def story(story_id):
             flash(message)
             return redirect(url_for('views.story', story_id=story.id))
         else:
-            form.title.errors.append('An event with this title already exists')
+            form.description.errors.append('An event with this description already exists')
       
     
     people_facets = get_facets(entity_type='person', 
@@ -216,7 +212,7 @@ def get_facets(**kwargs):
 
     if kwargs['query']:
         facets_query += '''
-            AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.title || ' ' || event.description || ' ' || event.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.description || ' ' || event.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
             '''.format(query=kwargs['query'])
 
     if kwargs['select_facet']:
@@ -237,7 +233,7 @@ def get_facets(**kwargs):
 
 def get_query_results(**kwargs):
     results_query = '''
-        SELECT DISTINCT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
+        SELECT DISTINCT e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
         FROM event as e
         LEFT JOIN events_stories ON e.id = events_stories.event_id 
         LEFT JOIN story ON events_stories.story_id = story.id
@@ -252,7 +248,7 @@ def get_query_results(**kwargs):
 
     if kwargs['query']:
         results_query += '''
-            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.description || ' ' || e.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
             '''.format(query=kwargs['query'])
 
     if kwargs['select_facet']:

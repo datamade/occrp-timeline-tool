@@ -3,19 +3,19 @@
 
     <div class="row">
         <div class="form-inline">
-        {% if form.title.errors %}
-            <div class="form-group has-error col-sm-12">
-        {% else %}
-            <div class="form-group col-sm-12">
-        {% endif %}
-            <h4>Title</h4>
-            {{ form.title(class="form-control") }}
-            {% if form.title.errors %}
-                {% for error in form.title.errors %}
-                    <span class="help-block">{{ error }}</span>
-                {% endfor %}
+            {% if form.description.errors %}
+                <div class="form-group has-error col-sm-12">
+            {% else %}
+                <div class="form-group col-sm-12">
             {% endif %}
-            </div>
+                <h4>Description</h4>
+                {{ form.description(class="form-control") }}
+                {% if form.description.errors %}
+                    {% for error in form.description.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
         </div>
     </div>
 
@@ -55,15 +55,33 @@
 
     <div class="row">
         <div class="form-inline">
-            {% if form.description.errors %}
+            {% if form.location.errors %}
                 <div class="form-group has-error col-sm-12">
             {% else %}
                 <div class="form-group col-sm-12">
             {% endif %}
-                <h4>Description</h4>
-                {{ form.description(class="form-control") }}
-                {% if form.description.errors %}
-                    {% for error in form.description.errors %}
+                <h4>Location</h4>
+                {{ form.location(class="form-control") }}
+                {% if form.location.errors %}
+                    {% for error in form.location.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-inline">
+            {% if form.event_type.errors %}
+                <div class="form-group has-error col-sm-12">
+            {% else %}
+                <div class="form-group col-sm-12">
+            {% endif %}
+                <h4>Type of event</h4>
+                {{ form.event_type(class="form-control") }}
+                {% if form.event_type.errors %}
+                    {% for error in form.event_type.errors %}
                         <span class="help-block">{{ error }}</span>
                     {% endfor %}
                 {% endif %}
