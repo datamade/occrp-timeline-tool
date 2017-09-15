@@ -57,11 +57,11 @@ def story(story_id):
         toggle_order = 'desc'
 
     if form.validate_on_submit():
-        start_date = form.data['start_date']
-        end_date = form.data['end_date']
-        description = form.data['description']
-        significance = form.data['significance']
-        source_label = form.data['source_label']
+        start_date = trim(form.data['start_date'])
+        end_date = trim(form.data['end_date'])
+        description = trim(form.data['description'])
+        significance = trim(form.data['significance'])
+        source_label = trim(form.data['source_label'])
         organization_list = request.form.getlist('organization')
         person_name_list = request.form.getlist('person_name')
 
@@ -93,7 +93,7 @@ def story(story_id):
             if person_name_list:
                 for person_name in person_name_list:
                     person, person_created = get_or_create(Person,
-                                      name=person_name)
+                                      name=trim(person_name))
                     event.people.append(person)
 
             if source_label:
@@ -104,7 +104,7 @@ def story(story_id):
             if organization_list:
                 for organization in organization_list:
                     org, org_created = get_or_create(Organization,
-                                        name=organization)
+                                        name=trim(organization))
                     event.organizations.append(org)
                 
             # Update story
