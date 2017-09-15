@@ -199,7 +199,7 @@ def source_autocomplete():
 
 def get_facets(**kwargs):
     facets_query = '''
-        SELECT trim({entity_type}.{field}) as facet, count({entity_type}.id) as facet_count 
+        SELECT TRIM({entity_type}.{field}) as facet, array_length(array_agg(distinct event.id), 1) as facet_count
         FROM story
         LEFT JOIN events_stories ON story.id = events_stories.story_id 
         LEFT JOIN event ON events_stories.event_id = event.id 
@@ -227,6 +227,8 @@ def get_facets(**kwargs):
     facets_query += '''
         GROUP BY {entity_type}.{field}
         '''.format(entity_type=kwargs['entity_type'], field=kwargs['field'])
+
+    print(facets_query)
 
     facets = engine.execute(facets_query).fetchall()
     facets = [dict(f) for f in facets if f[0] != None]

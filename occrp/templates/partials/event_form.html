@@ -89,46 +89,6 @@
         </div>
     </div>
 
-    <div id="personRow" class="row">
-        <div class="form-inline">
-            {% if form.person_name.errors %}
-                <div class="form-group has-error col-sm-12">
-            {% else %}
-                <div class="form-group col-sm-12">
-            {% endif %}
-                <h4>Person involved</h4>
-                {{ form.person_name(class="form-control", id="person-input") }}
-                {% if form.person_name.errors %}
-                    {% for error in form.person_name.errors %}
-                        <span class="help-block">{{ error }}</span>
-                    {% endfor %}
-                {% endif %}
-                </div>
-                
-        </div>
-        <div class="col-sm-12 mg-top-sm mg-bottom-sm">
-            <a href='' id='add-person'><i class="fa fa-plus-circle" aria-hidden="true"></i> Add another person</a>
-        </div>
-    </div>
-
-    <div id="organizationRow" class="row">
-        <div class="form-inline">
-            {% if form.organization.errors %}
-                <div class="form-group has-error col-sm-12">
-            {% else %}
-                <div class="form-group col-sm-12">
-            {% endif %}
-                <h4>Organization</h4>
-                {{ form.organization(class="form-control", id="organization-input") }}
-                {% if form.organization.errors %}
-                    {% for error in form.organization.errors %}
-                        <span class="help-block">{{ error }}</span>
-                    {% endfor %}
-                {% endif %}
-                </div>
-        </div>
-    </div>
-    
     <div class="row">
         <div class="form-inline">
             {% if form.source_label.errors %}
@@ -147,7 +107,60 @@
         </div>
     </div>
 
-    
+    <div class="row">
+        <div class="col-sm-12">
+            <h4>Person involved</h4>
+        </div>
+    </div>
+    <div id="personRow" class="row">
+        <div class="form-inline">
+            {% if form.person_name.errors %}
+                <div class="form-group has-error col-sm-12">
+            {% else %}
+                <div class="form-group col-sm-12">
+            {% endif %}
+                {{ form.person_name(class="form-control mg-bottom-sm", id="person-input") }}
+                {% if form.person_name.errors %}
+                    {% for error in form.person_name.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+                <br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 mg-top-sm mg-bottom-sm">
+            <a href='' id='addPerson'><i class="fa fa-plus-circle" aria-hidden="true"></i> Add another person</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h4>Organization</h4>
+        </div>
+    </div>
+    <div id="organizationRow" class="row">
+        <div class="form-inline">
+            {% if form.organization.errors %}
+                <div class="form-group has-error col-sm-12">
+            {% else %}
+                <div class="form-group col-sm-12">
+            {% endif %}
+                {{ form.organization(class="form-control mg-bottom-sm", id="organization-input") }}
+                {% if form.organization.errors %}
+                    {% for error in form.organization.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 mg-top-sm mg-bottom-sm">
+            <a href='' id='addOrganization'><i class="fa fa-plus-circle" aria-hidden="true"></i> Add another organization</a>
+        </div>
+    </div>
 
     <div class="row">
       <div class="form-group col-sm-12">

@@ -38,6 +38,23 @@ $(document).ready(function() {
     });
 
     // Event form
-    
+    $('#addOrganization').on('click', function(e){
+        e.preventDefault();
+        personInput = $("#organizationRow").children().first().clone();
+        $('#organizationRow').append(personInput);
+        $(personInput).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>")
+    });
+
+    $('#addPerson').on('click', function(e){
+        e.preventDefault();
+        personInput = $("#personRow").children().first().clone();
+        $('#personRow').append(personInput);
+        $(personInput).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>")
+    });
+
+    $('body').on('click', '.removeRow', function(e){
+        e.preventDefault();
+        $(this).parent().remove()
+    });
 
 });

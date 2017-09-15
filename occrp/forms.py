@@ -11,6 +11,7 @@ class StoryForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
 
 
+# Upon data entry, we should trim all strings
 class EventForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
     start_date = StringField('start_date')
