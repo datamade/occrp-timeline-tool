@@ -17,9 +17,9 @@ class EventForm(FlaskForm):
     end_date = StringField('end_date')
     description = StringField('description')
     significance = StringField('significance')
-    person_name = StringField('person_name')
     source_label = StringField('source_label')
-    organization = StringField('organization')
+    person_name = StringField('person_name') # Should allow for multiple inputs
+    organization = StringField('organization') # Should allow for multiple inputs
 
     def validate(self):
         rv = FlaskForm.validate(self)

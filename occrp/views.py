@@ -62,10 +62,12 @@ def story(story_id):
         end_date = form.data['end_date']
         description = form.data['description']
         significance = form.data['significance']
-        person_name = form.data['person_name']
         source_label = form.data['source_label']
-        organization = form.data['organization']
-        
+        # organization = form.data['organization']
+        # person_name = form.data['person_name']
+        organization_list = request.form.getlist('organization')
+        person_name_list = request.form.getlist('person_name')
+
         if start_date:
             start_date, start_date_accuracy = parseDateAccuracy(start_date)
         else:
@@ -92,20 +94,22 @@ def story(story_id):
             db.session.add(event)
 
             # Create and add person
-            if person_name:
-                person, person_created = get_or_create(Person,
-                                  name=person_name)
-                event.people.append(person)
+            if person_name_list:
+                for person_name in person_name_list:
+                    person, person_created = get_or_create(Person,
+                                      name=person_name)
+                    event.people.append(person)
 
             if source_label:
                 source, source_created = get_or_create(Source,
                                         label=source_label)
                 event.sources.append(source)
             
-            if organization:
-                org, org_created = get_or_create(Organization,
-                                    name=organization)
-                event.organizations.append(org)
+            if organization_list:
+                for organization in organization_list:
+                    org, org_created = get_or_create(Organization,
+                                        name=organization)
+                    event.organizations.append(org)
                 
             # Update story
             story.events.append(event)
@@ -231,7 +235,7 @@ def get_facets(**kwargs):
 
 def get_query_results(**kwargs):
     results_query = '''
-        SELECT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
+        SELECT DISTINCT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
         FROM event as e
         LEFT JOIN events_stories ON e.id = events_stories.event_id 
         LEFT JOIN story ON events_stories.story_id = story.id

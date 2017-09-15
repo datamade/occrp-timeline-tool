@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div id="personRow" class="row">
         <div class="form-inline">
             {% if form.person_name.errors %}
                 <div class="form-group has-error col-sm-12">
@@ -104,10 +104,14 @@
                     {% endfor %}
                 {% endif %}
                 </div>
+                
+        </div>
+        <div class="col-sm-12 mg-top-sm mg-bottom-sm">
+            <a href='' id='add-person'><i class="fa fa-plus-circle" aria-hidden="true"></i> Add another person</a>
         </div>
     </div>
 
-    <div class="row">
+    <div id="organizationRow" class="row">
         <div class="form-inline">
             {% if form.organization.errors %}
                 <div class="form-group has-error col-sm-12">
