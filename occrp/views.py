@@ -224,8 +224,6 @@ def get_facets(**kwargs):
         GROUP BY {entity_type}.{field}
         '''.format(entity_type=kwargs['entity_type'], field=kwargs['field'])
 
-    print(facets_query)
-
     facets = engine.execute(facets_query).fetchall()
     facets = [dict(f) for f in facets if f[0] != None]
     return facets

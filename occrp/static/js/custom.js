@@ -38,21 +38,33 @@ $(document).ready(function() {
     });
 
     // Event form
+    function addInput(entityTypeID) {
+        input = $(entityTypeID).children().first().clone();
+        $(entityTypeID).append(input);
+        $(input).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>");
+    } 
+
+    $('#collapsePeopleOrg').on('click', function(e){
+        e.stopPropagation();
+    });
+
     $('#addOrganization').on('click', function(e){
         e.preventDefault();
-        personInput = $("#organizationRow").children().first().clone();
-        $('#organizationRow').append(personInput);
-        $(personInput).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>")
+        addInput('#organizationRow');
     });
 
     $('#addPerson').on('click', function(e){
         e.preventDefault();
-        personInput = $("#personRow").children().first().clone();
-        $('#personRow').append(personInput);
-        $(personInput).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>")
+       addInput('#personRow');
     });
 
-    $('body').on('click', '.removeRow', function(e){
+    $('#addSource').on('click', function(e){
+        e.preventDefault();
+        addInput('#sourceRow');
+    });
+
+    // Event delegation for dynamically generated items
+    $('.panel-body').on('click', '.removeRow', function(e){
         e.preventDefault();
         $(this).parent().remove()
     });
