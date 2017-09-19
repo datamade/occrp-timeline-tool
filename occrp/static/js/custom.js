@@ -38,15 +38,23 @@ $(document).ready(function() {
     });
 
     // Event form
-    function addInput(entityTypeID) {
-        input = $(entityTypeID).children().first().clone();
-        $(entityTypeID).append(input);
-        $(input).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>");
-    } 
-
+    // Click on input boxes without triggering collapse
     $('#collapsePeopleOrg').on('click', function(e){
         e.stopPropagation();
     });
+
+    $('#collapseTimePlace').on('click', function(e){
+        e.stopPropagation();
+    });
+
+    // Add multiple people, organizations, and sources
+    function addInput(entityTypeID) {
+        input = $(entityTypeID).children().first().clone();
+        input.find('input:text').val('');
+        $(entityTypeID).append(input);
+        $(input).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>");
+
+    } 
 
     $('#addOrganization').on('click', function(e){
         e.preventDefault();

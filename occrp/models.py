@@ -65,7 +65,7 @@ class Source(db.Model):
 class Event(db.Model):
     __tablename__ = 'event'
     id = Column(Integer, primary_key=True)
-    description = Column(String, nullable=True, unique=False)
+    description = Column(String, nullable=False, unique=True)
     significance = Column(String, nullable=True, unique=False)
     start_date = Column(DateTime) 
     end_date = Column(DateTime)
@@ -81,13 +81,13 @@ class EventType(db.Model):
     __tablename__ = 'event_type'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
-    events = relationship('Event', backref='event_type', lazy='dynamic')
+    events = db.relationship('Event', backref='event_type', lazy='dynamic')
 
 
 class Location(db.Model):
     id = Column(Integer, primary_key=True)
     location = Column(String, nullable=False, unique=True)
-    events = relationship('Event', backref='location', lazy='dynamic')
+    events = db.relationship('Event', backref='location', lazy='dynamic')
 
 
 class Story(db.Model):

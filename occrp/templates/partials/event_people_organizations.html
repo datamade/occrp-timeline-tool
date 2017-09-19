@@ -24,7 +24,7 @@
                   {% else %}
                       <div class="form-group col-sm-12">
                   {% endif %}
-                      {{ form.person_name(class="form-control mg-bottom-sm", id="person-input") }}
+                      {{ form.person_name(class="form-control mg-bottom-sm person-input") }}
                       {% if form.person_name.errors %}
                           {% for error in form.person_name.errors %}
                               <span class="help-block">{{ error }}</span>

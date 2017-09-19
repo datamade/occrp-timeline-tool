@@ -30,7 +30,7 @@
                 <div class="form-group col-sm-12">
             {% endif %}
                 <h4>Type of event</h4>
-                {{ form.event_type(class="form-control") }}
+                {{ form.event_type(class="form-control", id="event-type-input") }}
                 {% if form.event_type.errors %}
                     {% for error in form.event_type.errors %}
                         <span class="help-block">{{ error }}</span>

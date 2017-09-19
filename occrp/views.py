@@ -48,7 +48,7 @@ def story(story_id):
     story = Story.query.get(story_id)
     query = request.args.get('q', None)
     select_facet = request.args.get('facet', None)
-    type_facet = request.args.get('type', None)
+    type_facet = request.args.get('type', 'Organizations')
     sort_order = request.args.get('sort', 'desc')
     order_by = request.args.get('order_by', 'start_date')
 
@@ -57,56 +57,59 @@ def story(story_id):
         toggle_order = 'desc'
 
     if form.validate_on_submit():
-        start_date = trim(form.data['start_date'])
-        end_date = trim(form.data['end_date'])
-        description = trim(form.data['description'])
-        significance = trim(form.data['significance'])
-        source_label = trim(form.data['source_label'])
+        description = form.data['description']
+        event_type = form.data['event_type']
+        significance = form.data['significance']
+        start_date = form.data['start_date']
+        end_date = form.data['end_date']
+        source_list = request.form.getlist('source_label')
         organization_list = request.form.getlist('organization')
         person_name_list = request.form.getlist('person_name')
 
-        if start_date:
-            start_date, start_date_accuracy = parseDateAccuracy(start_date)
-        else:
-            start_date = None
-            start_date_accuracy = None
-
-        if end_date:
-            end_date, end_date_accuracy = parseDateAccuracy(end_date)
-        else:
-            end_date = None
-            end_date_accuracy = None
-        
         event, event_created = get_or_create(Event, 
-                          start_date=start_date,
-                          start_date_accuracy=start_date_accuracy,
-                          end_date=end_date,
-                          end_date_accuracy=end_date_accuracy,
-                          description=description,
-                          significance=significance)
+                          description=description.strip())
 
         if event_created:
             # Add event
             db.session.add(event)
 
-            # Create and add person
-            if person_name_list:
+            if event_type:
+                event_type_obj, event_type_created = get_or_create(EventType,
+                                      name=event_type.strip())
+                event.event_type_id = event_type_obj.id
+
+            if significance:
+                event.significance = significance.strip()
+
+            if start_date:
+                start_date, start_date_accuracy = parseDateAccuracy(start_date.strip())
+                event.start_date = start_date
+                event.start_date_accuracy = start_date_accuracy
+
+            if end_date:
+                end_date, end_date_accuracy = parseDateAccuracy(end_date.strip())
+                event.end_date = end_date
+                event.end_date_accuracy = end_date_accuracy
+        
+            # Create and add people, source, and organizations
+            if not all('' == p for p in person_name_list):
                 for person_name in person_name_list:
                     person, person_created = get_or_create(Person,
-                                      name=trim(person_name))
+                                      name=person_name.strip())
                     event.people.append(person)
 
-            if source_label:
-                source, source_created = get_or_create(Source,
-                                        label=source_label)
-                event.sources.append(source)
+            if not all('' == s for s in source_list):
+                for source_label in source_list:
+                    source, source_created = get_or_create(Source,
+                                            label=source_label.strip())
+                    event.sources.append(source)
             
-            if organization_list:
+            if not all('' == o for o in organization_list):
                 for organization in organization_list:
                     org, org_created = get_or_create(Organization,
-                                        name=trim(organization))
+                                        name=organization.strip())
                     event.organizations.append(org)
-                
+            
             # Update story
             story.events.append(event)
             db.session.add(story)
@@ -170,6 +173,13 @@ def story(story_id):
 @views.route('/about')
 def about():
     return render_template('about.html')
+
+
+@views.route('/eventtype-autocomplete/')
+def eventtype_autocomplete():
+    term = request.args['q']
+
+    return autocomplete_results(EventType.name, term)
 
 
 @views.route('/person-autocomplete/')

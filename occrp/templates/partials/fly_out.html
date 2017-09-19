@@ -1,11 +1,4 @@
-{% if event.description or event.significance or event.people %}
-  {% if event.description %}
-    <div class='col-sm-12'>
-      <h4>Description</h4>
-      {{ event.description }}
-    </div>
-  {% endif %}
-
+{% if event.event_type_id or event.significance or event.people or event.organizations %}
   {% if event.significance %}
     <div class='col-sm-12'>
       <h4>Significance</h4>
@@ -21,6 +14,16 @@
       {% endfor %}
     </div>
   {% endif %}
+
+  {% if event.organizations %}
+    <div class="col-sm-12">
+      <h4>Related organizations</h4>
+      {% for org in event.organizations %}
+        <p>{{ org.name }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
 {% else %}
     <div class="col-sm-12">
       <p><em>This event does not have any related entities.</em></p>
