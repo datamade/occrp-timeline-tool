@@ -52,7 +52,7 @@
                   {% else %}
                       <div class="form-group col-sm-12">
                   {% endif %}
-                      {{ form.organization(class="form-control mg-bottom-sm", id="organization-input") }}
+                      {{ form.organization(class="form-control mg-bottom-sm organization-input") }}
                       {% if form.organization.errors %}
                           {% for error in form.organization.errors %}
                               <span class="help-block">{{ error }}</span>
@@ -79,7 +79,7 @@
                   {% else %}
                       <div class="form-group col-sm-12">
                   {% endif %}
-                      {{ form.source_label(class="form-control mg-bottom-sm", id="source-input") }}
+                      {{ form.source_label(class="form-control mg-bottom-sm source-input") }}
                       {% if form.source_label.errors %}
                           {% for error in form.source_label.errors %}
                               <span class="help-block">{{ error }}</span>

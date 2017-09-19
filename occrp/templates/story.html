@@ -145,30 +145,66 @@
         }
     };
 
+    function addInput(entityTypeID) {
+        input = $(entityTypeID).children().first().clone();
+        input.find('input:text').val('');
+        $(entityTypeID).append(input);
+        $(input).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>");
+    }; 
+
+    function enablePersonAutocomplete() {
+        $('.person-input').autocomplete({
+            source: make_source("{{ url_for('views.person_autocomplete')}}"),
+            minLength: 1,
+        });
+    };
+
+    function enableOrgAutocomplete() {
+        $('.organization-input').autocomplete({
+            source: make_source("{{ url_for('views.organization_autocomplete')}}"),
+            minLength: 1,
+        });
+    };
+
+    function enableSourceAutocomplete() {
+        $('.source-input').autocomplete({
+            source: make_source("{{ url_for('views.source_autocomplete')}}"),
+            minLength: 1,
+        });
+    };
+
     $(document).ready(function(e){
+        $('.facet-link').on('click', function(e) {
+            e.stopPropagation();
+        });
+
          // Use jQuery-UI autocomplete function.
         $("#event-type-input").autocomplete({
             source: make_source("{{ url_for('views.eventtype_autocomplete')}}"),
             minLength: 1,
         });
 
-        $('.panel-body').find('.person-input').autocomplete({
-            source: make_source("{{ url_for('views.person_autocomplete')}}"),
-            minLength: 1,
+        enablePersonAutocomplete();
+        enableOrgAutocomplete();
+        enableSourceAutocomplete();
+
+        // Add multiple people, organizations, and sources
+        $('#addOrganization').on('click', function(e){
+            e.preventDefault();
+            addInput('#organizationRow');
+            enableOrgAutocomplete();
         });
 
-        $("#organization-input").autocomplete({
-            source: make_source("{{ url_for('views.organization_autocomplete')}}"),
-            minLength: 1,
+        $('#addPerson').on('click', function(e){
+            e.preventDefault();
+            addInput('#personRow');
+            enablePersonAutocomplete();
         });
 
-        $("#source-input").autocomplete({
-            source: make_source("{{ url_for('views.source_autocomplete')}}"),
-            minLength: 1,
-        });
-
-        $(".facet-link").on("click", function(e) {
-            e.stopPropagation();
+        $('#addSource').on('click', function(e){
+            e.preventDefault();
+            addInput('#sourceRow');
+            enableSourceAutocomplete();
         });
 
     });

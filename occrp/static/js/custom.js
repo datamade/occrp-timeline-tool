@@ -37,38 +37,13 @@ $(document).ready(function() {
         }
     });
 
-    // Event form
-    // Click on input boxes without triggering collapse
+    // Click on input boxes without triggering collapse on event form
     $('#collapsePeopleOrg').on('click', function(e){
         e.stopPropagation();
     });
 
     $('#collapseTimePlace').on('click', function(e){
         e.stopPropagation();
-    });
-
-    // Add multiple people, organizations, and sources
-    function addInput(entityTypeID) {
-        input = $(entityTypeID).children().first().clone();
-        input.find('input:text').val('');
-        $(entityTypeID).append(input);
-        $(input).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>");
-
-    } 
-
-    $('#addOrganization').on('click', function(e){
-        e.preventDefault();
-        addInput('#organizationRow');
-    });
-
-    $('#addPerson').on('click', function(e){
-        e.preventDefault();
-       addInput('#personRow');
-    });
-
-    $('#addSource').on('click', function(e){
-        e.preventDefault();
-        addInput('#sourceRow');
     });
 
     // Event delegation for dynamically generated items
