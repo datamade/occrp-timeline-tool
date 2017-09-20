@@ -7,11 +7,14 @@ python:
 install:
 - pip install --upgrade pip
 - pip install --upgrade -r requirements.txt
+- npm install -g jshint
 addons:
   postgresql: '9.6'
 before_script:
 - mv configs/config.py.travis occrp/app_config.py
-script: pytest tests
+script: 
+- pytest tests
+- jshint occrp/static/js/custom.js
 deploy:
   provider: codedeploy
   access_key_id: AKIAJNYGDLOJKHOUWCAA
