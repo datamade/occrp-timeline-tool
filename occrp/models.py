@@ -65,7 +65,7 @@ class Source(db.Model):
 class Event(db.Model):
     __tablename__ = 'event'
     id = Column(Integer, primary_key=True)
-    description = Column(String, nullable=False, unique=True)
+    description = Column(String, nullable=False, unique=True)    
     significance = Column(String, nullable=True, unique=False)
     start_date = Column(DateTime) 
     end_date = Column(DateTime)
