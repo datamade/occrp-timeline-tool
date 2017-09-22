@@ -10,7 +10,7 @@ import psycopg2
 
 from occrp import create_app
 from occrp.database import db as _db
-from occrp.models import Story
+from occrp.models import Story, Event
 from occrp.app_config import DB_OPTS, DB_CONN
 
 
@@ -109,3 +109,16 @@ def story(db, request):
     request.addfinalizer(teardown)
     return story
 
+
+@pytest.fixture(scope='function')
+def event(db, request):
+    """Creates a new instance of an event."""
+    event = Event(description='Juicy meaningful event')
+    db.session.add(event)
+    db.session.commit()
+
+    def teardown():
+        db.session.delete(event)
+    
+    request.addfinalizer(teardown)
+    return event

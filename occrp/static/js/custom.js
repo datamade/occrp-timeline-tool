@@ -37,4 +37,19 @@ $(document).ready(function() {
         }
     });
 
+    // Click on input boxes without triggering collapse on event form
+    $('#collapsePeopleOrg').on('click', function(e){
+        e.stopPropagation();
+    });
+
+    $('#collapseTimePlace').on('click', function(e){
+        e.stopPropagation();
+    });
+
+    // Event delegation for dynamically generated items
+    $('.panel-body').on('click', '.removeRow', function(e){
+        e.preventDefault();
+        $(this).parent().remove()
+    });
+
 });

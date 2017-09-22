@@ -1,0 +1,70 @@
+<div class="formCollapse" data-toggle="collapse" data-parent="#accordion" href="#collapseTimePlace">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" >
+          Add information about event time and place. 
+        </a>
+        <span class="pull-right"><i class="fa fa-plus" aria-hidden="true"></i></span>
+      </h4>
+    </div>
+    
+    <div id="collapseTimePlace" class="panel-collapse collapse">
+      <div class="panel-body">
+
+          <div class="row">
+            <div class="form-inline">
+                {% if form.start_date.errors %}
+                    <div class="form-group has-error col-sm-6">
+                {% else %}
+                    <div class="form-group col-sm-6">
+                {% endif %}
+                    <h4>Start date</h4>
+                    {{ form.start_date(class="form-control") }}
+
+                    {% if form.start_date.errors %}
+                        {% for error in form.start_date.errors %}
+                            <span class="help-block">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+
+                {% if form.end_date.errors %}
+                    <div class="form-group has-error col-sm-6">
+                {% else %}
+                    <div class="form-group col-sm-6">
+                {% endif %}
+                    <h4>End date</h4>
+                    {{ form.end_date(class="form-control") }}
+                    {% if form.end_date.errors %}
+                        {% for error in form.end_date.errors %}
+                            <span class="help-block">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-inline">
+                {% if form.location.errors %}
+                    <div class="form-group has-error col-sm-12">
+                {% else %}
+                    <div class="form-group col-sm-12">
+                {% endif %}
+                    <h4>Location</h4>
+                    {{ form.location(class="form-control") }}
+                    {% if form.location.errors %}
+                        {% for error in form.location.errors %}
+                            <span class="help-block">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

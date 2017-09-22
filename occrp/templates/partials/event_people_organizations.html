@@ -1,0 +1,100 @@
+<div class="formCollapse" data-toggle="collapse" data-parent="#accordion" href="#collapsePeopleOrg">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" >
+          Add information about related people, organizations, and sources 
+        </a>
+        <span class="pull-right"><i class="fa fa-plus" aria-hidden="true"></i></span>
+      </h4>
+    </div>
+    
+    <div id="collapsePeopleOrg" class="panel-collapse collapse">
+      <div class="panel-body">
+
+          <div class="row">
+              <div class="col-sm-12">
+                  <h4>Person involved</h4>
+              </div>
+          </div>
+          <div id="personRow" class="row">
+              <div class="form-inline">
+                  {% if form.person_name.errors %}
+                      <div class="form-group has-error col-sm-12">
+                  {% else %}
+                      <div class="form-group col-sm-12">
+                  {% endif %}
+                      {{ form.person_name(class="form-control mg-bottom-sm person-input") }}
+                      {% if form.person_name.errors %}
+                          {% for error in form.person_name.errors %}
+                              <span class="help-block">{{ error }}</span>
+                          {% endfor %}
+                      {% endif %}
+                      </div>
+                      <br>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12 mg-top-sm mg-bottom-sm">
+                  <a href='' id='addPerson'><i class="fa fa-plus-circle" aria-hidden="true"></i> Add another person</a>
+              </div>
+          </div>
+
+          <div class="row">
+              <div class="col-sm-12">
+                  <h4>Organization</h4>
+              </div>
+          </div>
+          <div id="organizationRow" class="row">
+              <div class="form-inline">
+                  {% if form.organization.errors %}
+                      <div class="form-group has-error col-sm-12">
+                  {% else %}
+                      <div class="form-group col-sm-12">
+                  {% endif %}
+                      {{ form.organization(class="form-control mg-bottom-sm organization-input") }}
+                      {% if form.organization.errors %}
+                          {% for error in form.organization.errors %}
+                              <span class="help-block">{{ error }}</span>
+                          {% endfor %}
+                      {% endif %}
+                      </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12 mg-top-sm mg-bottom-sm">
+                  <a href='' id='addOrganization'><i class="fa fa-plus-circle" aria-hidden="true"></i> Add another organization</a>
+              </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <h4>Source</h4>
+            </div>
+          </div>
+          <div id="sourceRow" class="row">
+              <div class="form-inline">
+                  {% if form.source_label.errors %}
+                      <div class="form-group has-error col-sm-12">
+                  {% else %}
+                      <div class="form-group col-sm-12">
+                  {% endif %}
+                      {{ form.source_label(class="form-control mg-bottom-sm source-input") }}
+                      {% if form.source_label.errors %}
+                          {% for error in form.source_label.errors %}
+                              <span class="help-block">{{ error }}</span>
+                          {% endfor %}
+                      {% endif %}
+                      </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12 mg-top-sm mg-bottom-sm">
+                  <a href='' id='addSource'><i class="fa fa-plus-circle" aria-hidden="true"></i> Add another source</a>
+              </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>

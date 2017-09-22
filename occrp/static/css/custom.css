@@ -51,6 +51,12 @@ table, label,.control-label,.help-block,.checkbox,.radio { font-size: 14px; }
   color: #fff;
 }
 
+.mg-top-sm { margin-top: 8px; }
+.mg-bottom-sm { margin-bottom: 8px; }
+.mg-bottom-md { margin-bottom: 22px; }
+
+.required-color { color: #f04124; }
+
 /* Everything gets side spacing for mobile first views */
 .header,
 .marketing,
@@ -86,6 +92,19 @@ div.story-form-input {
 .created-width { width: 20%; }
 
 /* ===== STORY DETAIL ===== */
+.removeRow a { 
+  color: var(--purple-shade); 
+  margin-bottom: 4px;
+}
+
+.removeRow a:hover { 
+  color: var(--purple-shade); 
+}
+
+.formCollapse .panel-default {
+  border: 0;
+}
+
 .form-horizontal .form-group {
   margin-left: 0;
   margin-right: 0;

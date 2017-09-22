@@ -46,9 +46,9 @@
             <thead class="thead-default">
                 <tr>
                     <th class="story-width">
-                        <a href="{{url_for('views.story', story_id=story.id)}}?{{ request|query_transform(order_by='title', sort=toggle_order) }}">
-                            Title
-                            {% if order_by == 'title' %}
+                        <a href="{{url_for('views.story', story_id=story.id)}}?{{ request|query_transform(order_by='description', sort=toggle_order) }}">
+                            Description
+                            {% if order_by == 'description' %}
                                 {{ toggle_order|get_sort_icon|safe }}
                             {% endif %}
                         </a>
@@ -74,7 +74,7 @@
             <tbody>
                 {% for event in events %}
                     <tr class="detailsControl">
-                        <td><i class="fa fa-chevron-circle-right" aria-hidden="true"></i><i class="fa fa-chevron-circle-down" aria-hidden="true" style="display: none;"></i> {{ event.title }}</td>
+                        <td><i class="fa fa-chevron-circle-right" aria-hidden="true"></i><i class="fa fa-chevron-circle-down" aria-hidden="true" style="display: none;"></i> {{ event.description }}</td>
                         {% if event.start_date_accuracy == 4 %}
                             <td>{{ event.start_date|format_date('%Y') }}</td>
                         {% elif event.start_date_accuracy == 3 %}
@@ -114,7 +114,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <h3>Add an event and related people, organizations, and sources to this story</h3>
+        <h3>Add an event and all related information</h3>
     </div>
 </div>
 
@@ -145,25 +145,66 @@
         }
     };
 
-    $(document).ready(function(e){
-         // Use jQuery-UI autocomplete function.
-        $("#person-input").autocomplete({
+    function addInput(entityTypeID) {
+        input = $(entityTypeID).children().first().clone();
+        input.find('input:text').val('');
+        $(entityTypeID).append(input);
+        $(input).prepend("<div class='col-sm-12 removeRow'><a href=''><i class='fa fa-times' aria-hidden='true'></i> Remove</a></div>");
+    }; 
+
+    function enablePersonAutocomplete() {
+        $('.person-input').autocomplete({
             source: make_source("{{ url_for('views.person_autocomplete')}}"),
             minLength: 1,
         });
+    };
 
-        $("#organization-input").autocomplete({
+    function enableOrgAutocomplete() {
+        $('.organization-input').autocomplete({
             source: make_source("{{ url_for('views.organization_autocomplete')}}"),
             minLength: 1,
         });
+    };
 
-        $("#source-input").autocomplete({
+    function enableSourceAutocomplete() {
+        $('.source-input').autocomplete({
             source: make_source("{{ url_for('views.source_autocomplete')}}"),
             minLength: 1,
         });
+    };
 
-        $(".facet-link").on("click", function(e) {
+    $(document).ready(function(e){
+        $('.facet-link').on('click', function(e) {
             e.stopPropagation();
+        });
+
+         // Use jQuery-UI autocomplete function.
+        $("#event-type-input").autocomplete({
+            source: make_source("{{ url_for('views.eventtype_autocomplete')}}"),
+            minLength: 1,
+        });
+
+        enablePersonAutocomplete();
+        enableOrgAutocomplete();
+        enableSourceAutocomplete();
+
+        // Add multiple people, organizations, and sources
+        $('#addOrganization').on('click', function(e){
+            e.preventDefault();
+            addInput('#organizationRow');
+            enableOrgAutocomplete();
+        });
+
+        $('#addPerson').on('click', function(e){
+            e.preventDefault();
+            addInput('#personRow');
+            enablePersonAutocomplete();
+        });
+
+        $('#addSource').on('click', function(e){
+            e.preventDefault();
+            addInput('#sourceRow');
+            enableSourceAutocomplete();
         });
 
     });

@@ -48,7 +48,7 @@ def story(story_id):
     story = Story.query.get(story_id)
     query = request.args.get('q', None)
     select_facet = request.args.get('facet', None)
-    type_facet = request.args.get('type', None)
+    type_facet = request.args.get('type', 'Organizations')
     sort_order = request.args.get('sort', 'desc')
     order_by = request.args.get('order_by', 'start_date')
 
@@ -57,56 +57,59 @@ def story(story_id):
         toggle_order = 'desc'
 
     if form.validate_on_submit():
-        title = form.data['title']
+        description = form.data['description']
+        event_type = form.data['event_type']
+        significance = form.data['significance']
         start_date = form.data['start_date']
         end_date = form.data['end_date']
-        description = form.data['description']
-        significance = form.data['significance']
-        person_name = form.data['person_name']
-        source_label = form.data['source_label']
-        organization = form.data['organization']
-        
-        if start_date:
-            start_date, start_date_accuracy = parseDateAccuracy(start_date)
-        else:
-            start_date = None
-            start_date_accuracy = None
+        source_list = request.form.getlist('source_label')
+        organization_list = request.form.getlist('organization')
+        person_name_list = request.form.getlist('person_name')
 
-        if end_date:
-            end_date, end_date_accuracy = parseDateAccuracy(end_date)
-        else:
-            end_date = None
-            end_date_accuracy = None
-        
         event, event_created = get_or_create(Event, 
-                          title=title, 
-                          start_date=start_date,
-                          start_date_accuracy=start_date_accuracy,
-                          end_date=end_date,
-                          end_date_accuracy=end_date_accuracy,
-                          description=description,
-                          significance=significance)
+                          description=description.strip())
 
         if event_created:
             # Add event
             db.session.add(event)
 
-            # Create and add person
-            if person_name:
-                person, person_created = get_or_create(Person,
-                                  name=person_name)
-                event.people.append(person)
+            if event_type:
+                event_type_obj, event_type_created = get_or_create(EventType,
+                                      name=event_type.strip())
+                event.event_type_id = event_type_obj.id
 
-            if source_label:
-                source, source_created = get_or_create(Source,
-                                        label=source_label)
-                event.sources.append(source)
+            if significance:
+                event.significance = significance.strip()
+
+            if start_date:
+                start_date, start_date_accuracy = parseDateAccuracy(start_date.strip())
+                event.start_date = start_date
+                event.start_date_accuracy = start_date_accuracy
+
+            if end_date:
+                end_date, end_date_accuracy = parseDateAccuracy(end_date.strip())
+                event.end_date = end_date
+                event.end_date_accuracy = end_date_accuracy
+        
+            # Create and add people, source, and organizations
+            if not all('' == p for p in person_name_list):
+                for person_name in person_name_list:
+                    person, person_created = get_or_create(Person,
+                                      name=person_name.strip())
+                    event.people.append(person)
+
+            if not all('' == s for s in source_list):
+                for source_label in source_list:
+                    source, source_created = get_or_create(Source,
+                                            label=source_label.strip())
+                    event.sources.append(source)
             
-            if organization:
-                org, org_created = get_or_create(Organization,
-                                    name=organization)
-                event.organizations.append(org)
-                
+            if not all('' == o for o in organization_list):
+                for organization in organization_list:
+                    org, org_created = get_or_create(Organization,
+                                        name=organization.strip())
+                    event.organizations.append(org)
+            
             # Update story
             story.events.append(event)
             db.session.add(story)
@@ -117,7 +120,7 @@ def story(story_id):
             flash(message)
             return redirect(url_for('views.story', story_id=story.id))
         else:
-            form.title.errors.append('An event with this title already exists')
+            form.description.errors.append('An event with this description already exists')
       
     
     people_facets = get_facets(entity_type='person', 
@@ -172,6 +175,13 @@ def about():
     return render_template('about.html')
 
 
+@views.route('/eventtype-autocomplete/')
+def eventtype_autocomplete():
+    term = request.args['q']
+
+    return autocomplete_results(EventType.name, term)
+
+
 @views.route('/person-autocomplete/')
 def person_autocomplete():
     term = request.args['q']
@@ -195,7 +205,7 @@ def source_autocomplete():
 
 def get_facets(**kwargs):
     facets_query = '''
-        SELECT trim({entity_type}.{field}) as facet, count({entity_type}.id) as facet_count 
+        SELECT TRIM({entity_type}.{field}) as facet, array_length(array_agg(distinct event.id), 1) as facet_count
         FROM story
         LEFT JOIN events_stories ON story.id = events_stories.story_id 
         LEFT JOIN event ON events_stories.event_id = event.id 
@@ -212,7 +222,7 @@ def get_facets(**kwargs):
 
     if kwargs['query']:
         facets_query += '''
-            AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.title || ' ' || event.description || ' ' || event.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(event.description || ' ' || event.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
             '''.format(query=kwargs['query'])
 
     if kwargs['select_facet']:
@@ -231,7 +241,7 @@ def get_facets(**kwargs):
 
 def get_query_results(**kwargs):
     results_query = '''
-        SELECT e.title, e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
+        SELECT DISTINCT e.start_date, e.end_date, e.start_date_accuracy, e.end_date_accuracy, e.description, e.significance 
         FROM event as e
         LEFT JOIN events_stories ON e.id = events_stories.event_id 
         LEFT JOIN story ON events_stories.story_id = story.id
@@ -246,7 +256,7 @@ def get_query_results(**kwargs):
 
     if kwargs['query']:
         results_query += '''
-            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.title || ' ' || e.description || ' ' || e.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
+            AND plainto_tsquery('english', '{query}') @@ to_tsvector(e.description || ' ' || e.significance || ' ' || coalesce(source.label, '') || ' ' || coalesce(person.name, '') || ' ' || coalesce(person.email, '') || ' ' || coalesce(organization.name, ''))
             '''.format(query=kwargs['query'])
 
     if kwargs['select_facet']:
