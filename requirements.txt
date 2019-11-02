@@ -1,4 +1,4 @@
-Flask==0.12.2
+Flask==1.0
 flask_sqlalchemy==2.2
 psycopg2==2.7.1
 pytz==2017.2
